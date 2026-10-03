@@ -1,7 +1,17 @@
+import sys
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from app.api.routes.health import router as health_router
 from app.api.routes.questions import router as questions_router
+from app.api.routes.gateway import router as gateway_router
+from app.api.routes.factual import router as factual_router
 from app.api.routes.inference import router as inference_router
 
 app = FastAPI(
@@ -27,6 +37,14 @@ app.include_router(
 
 app.include_router(
     questions_router,
+    prefix="/api"
+)
+app.include_router(
+    gateway_router,
+    prefix="/api"
+)
+app.include_router(
+    factual_router,
     prefix="/api"
 )
 app.include_router(

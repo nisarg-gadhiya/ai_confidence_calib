@@ -1,10 +1,10 @@
 import pytest
 
-from ml.data.error_injection import inject_numeric_step_error
-from ml.evaluation.calibration import evaluate_calibration
-from ml.evaluation.localization import evaluate_localization
-from ml.evaluation.metrics import binary_auroc, maximum_calibration_error
-from ml.fusion.xgboost_model import train_step_calibrator
+from arithmetic.data.error_injection import inject_numeric_step_error
+from arithmetic.evaluation.calibration import evaluate_calibration
+from arithmetic.evaluation.localization import evaluate_localization
+from arithmetic.evaluation.metrics import binary_auroc, maximum_calibration_error
+from arithmetic.fusion.xgboost_model import train_step_calibrator
 from backend.app.services.calibration_service import predict_step_confidence
 from backend.app.services.fusion_service import fuse_confidence
 

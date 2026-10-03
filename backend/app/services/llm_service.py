@@ -1,5 +1,6 @@
 import json
 import math
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -42,6 +43,12 @@ class JSONCompletion:
     choice: Any
 
 
+def _response_value(value: Any, key: str, default: Any = None) -> Any:
+    if isinstance(value, dict):
+        return value.get(key, default)
+    return getattr(value, key, default)
+
+
 class LLMService:
     def __init__(
         self,
@@ -49,6 +56,7 @@ class LLMService:
         model: str = "gpt-4o-mini",
         api_key: str | None = None,
         client: OpenAI | None = None,
+        search_model: str | None = None,
     ):
         if provider.lower() != "openai":
             raise ValueError(
@@ -62,6 +70,7 @@ class LLMService:
 
         self.client = client or OpenAI(api_key=api_key)
         self.model = model
+        self.search_model = search_model or model
 
     def generate_reasoning(
         self,
@@ -215,6 +224,186 @@ class LLMService:
             step_type=normalize_step_type(result.get("step_type")),
             sample_cluster_ids=cluster_ids,
         )
+
+    def search_web(
+        self,
+        query: str,
+        max_results: int = 5,
+        model: str | None = None,
+    ) -> list[dict[str, str]]:
+        response = self.client.responses.create(
+            model=model or self.search_model,
+            tools=[{"type": "web_search", "search_context_size": "medium"}],
+            tool_choice="required",
+            input=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Search the web for reliable sources relevant to the query. "
+                        "Summarize only facts supported by the results and cite each "
+                        "source in the response. Do not invent citations."
+                    ),
+                },
+                {"role": "user", "content": query},
+            ],
+        )
+
+        results: list[dict[str, str]] = []
+        seen_urls: set[str] = set()
+        for output_item in _response_value(response, "output", []) or []:
+            if _response_value(output_item, "type") != "message":
+                continue
+            for content in _response_value(output_item, "content", []) or []:
+                if _response_value(content, "type") != "output_text":
+                    continue
+                text = _response_value(content, "text", "")
+                for annotation in _response_value(content, "annotations", []) or []:
+                    if _response_value(annotation, "type") != "url_citation":
+                        continue
+                    url = _response_value(annotation, "url", "")
+                    title = _response_value(annotation, "title", "")
+                    if not isinstance(url, str) or not url.startswith(("https://", "http://")) or url in seen_urls:
+                        continue
+                    excerpt = self._citation_excerpt(
+                        text,
+                        _response_value(annotation, "start_index", 0),
+                        _response_value(annotation, "end_index", 0),
+                    )
+                    if not excerpt:
+                        continue
+                    results.append({"title": str(title or url), "url": url, "text": excerpt})
+                    seen_urls.add(url)
+                    if len(results) >= max_results:
+                        return results
+        return results
+
+    @staticmethod
+    def _citation_excerpt(text: str, start_index: int, end_index: int) -> str:
+        if not isinstance(text, str) or not text.strip():
+            return ""
+        start_index = max(0, min(len(text), int(start_index or 0)))
+        end_index = max(start_index, min(len(text), int(end_index or start_index)))
+
+        prefix = text[:start_index].rstrip()
+        boundaries = [prefix.rfind(marker) for marker in (". ", "? ", "! ", "\n")]
+        excerpt = prefix[max(boundaries) + 1 :].strip()
+        if len(excerpt) < 24:
+            right = text.find(". ", end_index)
+            if right < 0:
+                right = min(len(text), end_index + 280)
+            excerpt = text[max(0, start_index - 280) : right].strip()
+        excerpt = re.sub(r"\s*\[\d+\]\s*", " ", excerpt).strip()
+        return excerpt[:1000]
+
+    def assess_factual_claim(
+        self,
+        question: str,
+        claim_text: str,
+        evidence: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "Assess a factual claim using only the supplied citation-linked "
+                    "evidence. For each evidence item, return SUPPORT only when it "
+                    "directly supports the claim, CONTRADICT only when it directly "
+                    "conflicts, otherwise UNKNOWN. Do not use prior knowledge. Also "
+                    "say whether the claim is essential to answering the question. "
+                    "Return JSON with confidence (0 to 1), essential (boolean), and "
+                    "source_assessments (objects with source_id and verdict). The "
+                    "confidence is a model estimate, not a statistically calibrated "
+                    "probability."
+                ),
+            },
+            {
+                "role": "user",
+                "content": json.dumps(
+                    {
+                        "question": question,
+                        "claim": claim_text,
+                        "evidence": [
+                            {
+                                "source_id": item.get("source_id"),
+                                "title": item.get("title"),
+                                "domain": item.get("domain"),
+                                "text": str(item.get("text", ""))[:2000],
+                            }
+                            for item in evidence
+                        ],
+                    }
+                ),
+            },
+        ]
+        result = self._create_json_completion(
+            messages,
+            temperature=0,
+            num_samples=1,
+        )[0].data
+
+        confidence = result.get("confidence")
+        if not isinstance(confidence, (int, float)) or isinstance(confidence, bool):
+            raise ValueError("The model returned no valid factual confidence estimate.")
+        confidence = float(confidence)
+        if not math.isfinite(confidence) or not 0.0 <= confidence <= 1.0:
+            raise ValueError("Factual confidence estimate must be between 0 and 1.")
+        if not evidence:
+            confidence = 0.0
+
+        valid_ids = {str(item.get("source_id")) for item in evidence}
+        source_assessments = []
+        assessments = result.get("source_assessments", [])
+        if not isinstance(assessments, list):
+            assessments = []
+        for item in assessments:
+            if not isinstance(item, dict):
+                continue
+            source_id = str(item.get("source_id", ""))
+            verdict = item.get("verdict")
+            if source_id in valid_ids and isinstance(verdict, str) and verdict in {"SUPPORT", "CONTRADICT", "UNKNOWN"}:
+                source_assessments.append({"source_id": source_id, "verdict": verdict})
+
+        return {
+            "confidence": confidence,
+            "essential": result.get("essential") is True,
+            "source_assessments": source_assessments,
+        }
+
+    def classify_question(self, question: str):
+        from gateway.prompts import CLASSIFICATION_SYSTEM_PROMPT
+        from gateway.schemas import QuestionClassification
+
+        schema = QuestionClassification.model_json_schema()
+        schema["additionalProperties"] = False
+
+        messages = [
+            {"role": "system", "content": CLASSIFICATION_SYSTEM_PROMPT},
+            {"role": "user", "content": question},
+        ]
+
+        completion = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=0,
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "question_classification",
+                    "schema": schema,
+                    "strict": True,
+                },
+            },
+        )
+
+        content = completion.choices[0].message.content
+        if not content:
+            raise ValueError("The model returned an empty classification response.")
+
+        try:
+            parsed = json.loads(content)
+            return QuestionClassification.model_validate(parsed)
+        except (TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise ValueError("Question classification validation failed.") from exc
 
     def _generate(
         self,

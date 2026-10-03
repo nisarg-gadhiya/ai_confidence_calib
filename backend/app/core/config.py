@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     llm_provider: str = "openai"
     llm_model: str = "gpt-4o-mini"
     llm_api_key: str | None = None
+    factual_search_model: str = "gpt-4.1-mini"
 
     consistency_samples: int = 5
     fusion_method: str = "weighted"

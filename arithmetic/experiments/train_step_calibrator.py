@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from ml.fusion.xgboost_model import train_step_calibrator
+from arithmetic.fusion.xgboost_model import train_step_calibrator
 
 
 def main() -> None:

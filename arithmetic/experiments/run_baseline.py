@@ -1,8 +1,8 @@
-from ml.evaluation.localization import (
+from arithmetic.evaluation.localization import (
     rank_steps_by_confidence,
 )
 
-from ml.fusion.weighted_fusion import (
+from arithmetic.fusion.weighted_fusion import (
     weighted_fusion,
 )
 

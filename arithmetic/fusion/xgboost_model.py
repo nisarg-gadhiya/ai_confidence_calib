@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from sklearn.model_selection import GroupShuffleSplit
 
 from backend.app.services.calibration_features import encode_feature_rows
-from ml.evaluation.calibration import evaluate_calibration
+from arithmetic.evaluation.calibration import evaluate_calibration
 
 
 def train_step_calibrator(

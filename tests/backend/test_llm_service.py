@@ -108,9 +108,86 @@ def test_step_verification_falls_back_when_cluster_ids_are_malformed():
     assert review.sample_cluster_ids is None
 
 
+def test_classify_question_uses_strict_schema_without_extra_properties():
+    client = Mock()
+    client.chat.completions.create.return_value = _completion('{"category":"arithmetic"}')
+    service = LLMService(client=client)
+
+    result = service.classify_question("What is 2 + 2?")
+
+    assert result.category == "arithmetic"
+    request = client.chat.completions.create.call_args.kwargs
+    schema = request["response_format"]["json_schema"]["schema"]
+    assert request["response_format"]["json_schema"]["strict"] is True
+    assert schema["additionalProperties"] is False
+
+
 def test_service_requires_api_key_without_injected_client():
     with pytest.raises(ValueError, match="LLM_API_KEY"):
         LLMService()
+
+
+def test_web_search_returns_only_cited_http_sources():
+    client = Mock()
+    text = "Canberra is the capital of Australia. [1]"
+    citation = SimpleNamespace(
+        type="url_citation",
+        start_index=text.index("[1]"),
+        end_index=len(text),
+        title="Australian Government",
+        url="https://www.australia.gov.au/capital",
+    )
+    client.responses.create.return_value = SimpleNamespace(
+        output=[
+            SimpleNamespace(
+                type="message",
+                content=[
+                    SimpleNamespace(
+                        type="output_text",
+                        text=text,
+                        annotations=[citation],
+                    )
+                ],
+            )
+        ]
+    )
+    service = LLMService(client=client)
+
+    results = service.search_web("capital of Australia", model="gpt-4.1-mini")
+
+    assert results == [
+        {
+            "title": "Australian Government",
+            "url": "https://www.australia.gov.au/capital",
+            "text": "Canberra is the capital of Australia.",
+        }
+    ]
+    request = client.responses.create.call_args.kwargs
+    assert request["tools"][0]["type"] == "web_search"
+    assert request["tool_choice"] == "required"
+    assert request["model"] == "gpt-4.1-mini"
+
+
+def test_factual_assessment_validates_source_verdicts():
+    client = Mock()
+    client.chat.completions.create.return_value = _completion(
+        '{"confidence":0.88,"essential":true,"source_assessments":['
+        '{"source_id":"web_1","verdict":"SUPPORT"},'
+        '{"source_id":"unknown","verdict":"CONTRADICT"}]}'
+    )
+    service = LLMService(client=client)
+
+    result = service.assess_factual_claim(
+        "What is the capital of Australia?",
+        "Canberra is the capital of Australia.",
+        [{"source_id": "web_1", "text": "Canberra is Australia's capital."}],
+    )
+
+    assert result == {
+        "confidence": 0.88,
+        "essential": True,
+        "source_assessments": [{"source_id": "web_1", "verdict": "SUPPORT"}],
+    }
 
 
 def test_step_token_statistics_excludes_json_wrapper_tokens():
