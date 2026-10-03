@@ -1,27 +1,26 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from gateway.router import route_question
-from gateway.schemas import QuestionClassification
-
-
-class ClassificationRequest(BaseModel):
-    question: str
+from app.api.schemas.reasoning import InferenceRequest
+from gateway.router import LogicalPipelineNotImplementedError, route_question
 
 
 router = APIRouter(tags=["gateway"])
 
 
-@router.post("/classify", response_model=QuestionClassification)
-def classify_question_endpoint(payload: ClassificationRequest):
+@router.post("/ask")
+def ask_endpoint(payload: InferenceRequest):
     try:
-        category = route_question(payload.question)
+        return route_question(
+            payload.question,
+            num_consistency_samples=payload.num_consistency_samples,
+        )
+    except LogicalPipelineNotImplementedError as exc:
+        raise HTTPException(status_code=501, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:  # pragma: no cover - defensive API guard
         raise HTTPException(
             status_code=500,
-            detail="Question classification failed.",
+            detail="Question routing failed.",
         ) from exc
-
-    return QuestionClassification(category=category)

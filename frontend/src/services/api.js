@@ -6,13 +6,13 @@ const api = axios.create({
 });
 
 
-export async function runInference(
+export async function askQuestion(
   question,
   numConsistencySamples = 5
 ) {
 
   const response = await api.post(
-    "/inference",
+    "/ask",
     {
       question,
       num_consistency_samples:

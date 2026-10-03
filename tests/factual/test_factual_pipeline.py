@@ -264,15 +264,8 @@ def test_calculate_answer_confidence_handles_simple_cases():
     ]) is None
 
 
-def test_factual_http_endpoint_returns_pipeline_result(monkeypatch):
-    import factual.pipeline as factual_pipeline
-
-    _stub_factual_runtime(monkeypatch, factual_pipeline)
+def test_factual_http_endpoint_is_not_mounted():
     client = TestClient(app)
     response = client.post("/api/factual", json={"question": "What is the capital of Australia?"})
 
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["question"] == "What is the capital of Australia?"
-    assert "steps" in payload
-    assert isinstance(payload["steps"], list)
+    assert response.status_code == 404

@@ -11,8 +11,6 @@ if str(REPO_ROOT) not in sys.path:
 from app.api.routes.health import router as health_router
 from app.api.routes.questions import router as questions_router
 from app.api.routes.gateway import router as gateway_router
-from app.api.routes.factual import router as factual_router
-from app.api.routes.inference import router as inference_router
 
 app = FastAPI(
     title="AI Confidence Calibration",
@@ -41,14 +39,6 @@ app.include_router(
 )
 app.include_router(
     gateway_router,
-    prefix="/api"
-)
-app.include_router(
-    factual_router,
-    prefix="/api"
-)
-app.include_router(
-    inference_router,
     prefix="/api"
 )
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-import { runInference } from "./services/api";
+import { askQuestion } from "./services/api";
 
 
 export default function App() {
@@ -29,7 +29,7 @@ export default function App() {
     try {
 
       const data =
-        await runInference(question);
+        await askQuestion(question);
 
       setResult(data);
 
@@ -133,7 +133,7 @@ export default function App() {
           </h2>
 
 
-          {result.reasoning.map(
+          {result.reasoning?.map(
             (step) => (
 
               <article
@@ -185,17 +185,43 @@ export default function App() {
             )
           )}
 
+          {result.steps?.map((step) => (
+            <article
+              key={step.step_id}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "16px",
+                marginBottom: "12px",
+              }}
+            >
+              <strong>Step {step.step_id}</strong>
+              <p>{step.text}</p>
+              {step.claims.map((claim) => (
+                <div key={claim.claim_id}>
+                  <p>{claim.text}</p>
+                  <div>Verification: {claim.verification.verdict}</div>
+                  <div>Claim confidence: {claim.calibrated_probability.toFixed(2)}</div>
+                </div>
+              ))}
+            </article>
+          ))}
 
-        <h3>
+
+        {result.reasoning && <h3>
             Predicted error step:{" "}
             {result.predicted_error_step ?? "None"}
-        </h3>
+        </h3>}
 
-        <h3>Final Answer</h3>
+        {result.reasoning && <h3>Final Answer</h3>}
 
-        <p>
+        {result.reasoning && <p>
           {result.final_answer ?? "No final answer returned."}
-        </p>
+        </p>}
+
+        {result.answer_confidence !== undefined && (
+          <h3>Answer confidence: {result.answer_confidence?.toFixed(2) ?? "Unavailable"}</h3>
+        )}
 
         </section>
 
