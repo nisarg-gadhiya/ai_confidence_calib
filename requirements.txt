@@ -47,6 +47,7 @@ sqlalchemy>=2.0,<3
 psycopg[binary]>=3.2,<4
 httpx>=0.27,<1
 openai>=2.0,<3
+z3-solver>=4.13,<5
 xgboost>=2.1,<4
 datasets>=3,<5
 pandas>=2,<4

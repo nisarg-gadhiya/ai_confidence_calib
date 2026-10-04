@@ -2,10 +2,7 @@ from gateway.classifier import classify_question
 from app.api.routes.inference import run_inference
 from app.api.schemas.reasoning import InferenceRequest
 from factual.pipeline import process_factual
-
-
-class LogicalPipelineNotImplementedError(NotImplementedError):
-    """Raised when the Gateway selects the not-yet-implemented logical pipeline."""
+from logical.pipeline import process_logical
 
 
 def route_question(question: str, num_consistency_samples: int = 5):
@@ -21,8 +18,6 @@ def route_question(question: str, num_consistency_samples: int = 5):
     if category == "factual":
         return process_factual(question)
     if category == "logical":
-        raise LogicalPipelineNotImplementedError(
-            "The logical reasoning pipeline is not implemented."
-        )
+        return process_logical(question, num_consistency_samples)
 
     raise ValueError(f"Unsupported question category: {category!r}")

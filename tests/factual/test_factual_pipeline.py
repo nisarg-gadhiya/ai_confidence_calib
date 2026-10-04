@@ -30,6 +30,19 @@ def test_claim_extraction_creates_atomic_claims():
     ]
 
 
+def test_claim_extraction_keeps_coordinated_lists_together():
+    claims = extract_claims(
+        [{
+            "step_id": 3,
+            "text": "An LSTM unit consists of a cell state, input gate, forget gate, and output gate.",
+        }]
+    )
+
+    assert [claim["claim_text"] for claim in claims] == [
+        "An LSTM unit consists of a cell state, input gate, forget gate, and output gate."
+    ]
+
+
 def test_source_reliability_estimation_uses_configured_policy():
     source = {
         "source_id": "s1",
@@ -48,7 +61,7 @@ def test_reliability_filter_keeps_downweights_and_rejects():
     sources = [
         {"source_id": "keep", "domain": "www.officialaustralia.gov.au", "source_type": "government", "title": "Official government page", "retrieval_score": 0.9},
         {"source_id": "down_weight", "domain": "www.exampleblog.com", "source_type": "blog", "title": "Blog post", "retrieval_score": 0.7},
-        {"source_id": "reject", "domain": "unknown-site.net", "source_type": "general", "title": "Low trust", "retrieval_score": 0.1},
+        {"source_id": "reject", "domain": "unknown-site.net", "source_type": "general", "title": "Low trust", "retrieval_score": 0.9, "reliability_score": 0.1},
     ]
 
     filtered = filter_sources(sources)
@@ -169,6 +182,108 @@ def test_source_search_maps_live_citations_to_source_records(monkeypatch):
     assert sources[0]["domain"] == "australia.gov.au"
     assert sources[0]["source_type"] == "government"
     assert sources[0]["retrieval_score"] > 0.0
+
+
+def test_source_search_preserves_results_without_cited_summaries(monkeypatch):
+    class FakeSearchService:
+        def search_web(self, _query):
+            return [
+                {
+                    "title": "A source discovered by web search",
+                    "url": "https://example.com/result",
+                    "text": "",
+                    "text_origin": "search_source_without_citation",
+                }
+            ]
+
+    monkeypatch.setattr(
+        "factual.retrieval.source_search.get_factual_llm_service",
+        lambda: FakeSearchService(),
+    )
+    monkeypatch.setattr("factual.retrieval.source_search._fetch_page_text", lambda _url: "")
+
+    sources = search_sources("A claim with no matching snippet")
+
+    assert len(sources) == 1
+    assert sources[0]["url"] == "https://example.com/result"
+    assert sources[0]["text"] == ""
+    assert sources[0]["text_origin"] == "search_source_without_citation"
+
+
+def test_source_search_fetches_page_text_for_uncited_result(monkeypatch):
+    class FakeSearchService:
+        def search_web(self, _query):
+            return [
+                {
+                    "title": "LSTM components",
+                    "url": "https://example.com/lstm",
+                    "text": "A recurrent network stores information in memory.",
+                    "text_origin": "citation_linked_model_summary",
+                }
+            ]
+
+    page_text = (
+        "The forget gate controls what information to discard from the cell state. "
+        "The input gate controls which new information is added to the cell state."
+    )
+    monkeypatch.setattr(
+        "factual.retrieval.source_search.get_factual_llm_service",
+        lambda: FakeSearchService(),
+    )
+    fetched_urls = []
+
+    def fake_fetch(url):
+        fetched_urls.append(url)
+        return page_text
+
+    monkeypatch.setattr("factual.retrieval.source_search._fetch_page_text", fake_fetch)
+
+    sources = search_sources("The forget gate controls information discarded from the cell state.")
+
+    assert fetched_urls == ["https://example.com/lstm"]
+    assert sources[0]["text_origin"] == "fetched_webpage_content"
+    assert "forget gate controls" in sources[0]["text"]
+
+
+def test_readable_page_parser_skips_scripts_and_navigation():
+    from factual.retrieval.source_search import _ReadableTextParser
+
+    parser = _ReadableTextParser()
+    parser.feed(
+        "<nav>Navigation text</nav><article><h1>LSTM</h1>"
+        "<p>The forget gate controls memory.</p><script>ignore()</script></article>"
+    )
+
+    parsed_text = " ".join(parser.parts)
+
+    assert "LSTM" in parsed_text
+    assert "forget gate controls memory" in parsed_text
+    assert "Navigation text" not in parsed_text
+    assert "ignore()" not in parsed_text
+
+
+def test_page_fetch_blocks_localhost_addresses():
+    from factual.retrieval.source_search import _is_public_http_url
+
+    assert _is_public_http_url("http://127.0.0.1/internal") is False
+    assert _is_public_http_url("http://localhost/internal") is False
+
+
+def test_factual_pipeline_logs_retrieval_stage_counts(monkeypatch, caplog):
+    import factual.pipeline as factual_pipeline
+
+    monkeypatch.setattr(
+        factual_pipeline,
+        "generate_reasoning_steps",
+        lambda _question: ["Paris is the capital of France."],
+    )
+    monkeypatch.setattr(factual_pipeline, "get_factual_llm_service", lambda: None)
+    monkeypatch.setattr(factual_pipeline, "search_sources", lambda *_args: [])
+
+    with caplog.at_level("INFO", logger="factual.pipeline"):
+        process_factual("What is the capital of France?")
+
+    assert "candidates=0 retained=0 rejected=0 evidence=0" in caplog.text
 
 
 def test_factual_pipeline_uses_independent_source_verdicts(monkeypatch):

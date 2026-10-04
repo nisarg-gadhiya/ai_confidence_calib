@@ -13,7 +13,7 @@ from app.services.llm_service import (
 )
 from factual import pipeline as factual_pipeline
 from gateway.schemas import QuestionClassification
-from gateway.router import LogicalPipelineNotImplementedError, route_question
+from gateway.router import route_question
 
 
 @pytest.mark.parametrize(
@@ -155,19 +155,24 @@ def test_direct_inference_and_factual_endpoints_are_unmounted():
         "/api/classify",
         json={"question": "What is the capital of France?"},
     ).status_code == 404
+    assert client.post(
+        "/api/questions",
+        json={"question_text": "What is the capital of France?"},
+    ).status_code == 404
+    assert client.get("/api/questions/1").status_code == 404
 
 
-def test_logical_category_returns_not_implemented(monkeypatch):
+def test_logical_category_routes_to_logical_pipeline(monkeypatch):
+    expected = {"question": "Who is the shortest?", "steps": []}
     monkeypatch.setattr("gateway.router.classify_question", lambda _question: "logical")
+    monkeypatch.setattr("gateway.router.process_logical", lambda question, _samples: expected)
 
-    with pytest.raises(LogicalPipelineNotImplementedError):
-        route_question("Who is the shortest?")
+    result = route_question("Who is the shortest?", num_consistency_samples=3)
 
+    assert result is expected
     response = TestClient(app).post(
         "/api/ask",
-        json={"question": "Who is the shortest?"},
+        json={"question": "Who is the shortest?", "num_consistency_samples": 3},
     )
-    assert response.status_code == 501
-    assert response.json() == {
-        "detail": "The logical reasoning pipeline is not implemented."
-    }
+    assert response.status_code == 200
+    assert response.json() == expected

@@ -5,4 +5,5 @@ pydantic-settings
 python-dotenv
 sqlalchemy
 openai>=2.0,<3
+z3-solver>=4.13,<5
 xgboost>=2.1,<4

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 from factual.answer_confidence import calculate_answer_confidence
 from factual.calibration.fusion import fuse_step_signals
 from factual.calibration.calibrator import calibrate_probability
@@ -13,6 +15,8 @@ from factual.retrieval.source_reliability import estimate_source_reliability
 from factual.retrieval.source_search import search_sources
 from factual.signals.consistency import consistency_score
 from factual.signals.evidence_score import aggregate_evidence_score
+
+logger = logging.getLogger(__name__)
 
 
 def process_factual(question: str):
@@ -42,6 +46,14 @@ def process_factual(question: str):
             filtered_sources = filter_sources(ranked_sources)
 
             evidence = retrieve_evidence_for_claim(claim["claim_text"], filtered_sources)
+            logger.info(
+                "Factual retrieval claim=%s candidates=%d retained=%d rejected=%d evidence=%d.",
+                claim["claim_id"],
+                len(ranked_sources),
+                sum(source["status"] != "REJECT" for source in filtered_sources),
+                sum(source["status"] == "REJECT" for source in filtered_sources),
+                len(evidence),
+            )
             assessment = (
                 llm.assess_factual_claim(question, claim["claim_text"], evidence)
                 if llm is not None

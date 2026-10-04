@@ -34,6 +34,25 @@ def test_generate_reasoning_returns_structured_steps():
     assert client.chat.completions.create.call_args.kwargs["n"] == 1
 
 
+def test_generate_logical_reasoning_uses_premises_only_prompt():
+    client = Mock()
+    client.chat.completions.create.return_value = _completion(
+        '{"steps":[{"step_number":1,"text":"Tom is a mammal.",'
+        '"step_type":"logical_inference"}],"final_answer":"Tom is a mammal."}'
+    )
+    service = LLMService(client=client)
+
+    result = service.generate_logical_reasoning(
+        "All cats are mammals. Tom is a cat. Is Tom a mammal?"
+    )
+
+    assert result.final_answer == "Tom is a mammal."
+    assert result.steps[0].text == "Tom is a mammal."
+    request = client.chat.completions.create.call_args.kwargs
+    assert "Use only premises and rules explicitly stated" in request["messages"][0]["content"]
+    assert request["temperature"] == 0
+
+
 def test_step_continuations_share_the_fixed_prefix():
     client = Mock()
     client.chat.completions.create.return_value = _completion(
@@ -140,6 +159,16 @@ def test_web_search_returns_only_cited_http_sources():
     client.responses.create.return_value = SimpleNamespace(
         output=[
             SimpleNamespace(
+                type="web_search_call",
+                action=SimpleNamespace(
+                    type="search",
+                    sources=[
+                        SimpleNamespace(type="url", url="https://www.australia.gov.au/capital"),
+                        SimpleNamespace(type="url", url="https://www.example.com/uncited"),
+                    ],
+                ),
+            ),
+            SimpleNamespace(
                 type="message",
                 content=[
                     SimpleNamespace(
@@ -160,12 +189,20 @@ def test_web_search_returns_only_cited_http_sources():
             "title": "Australian Government",
             "url": "https://www.australia.gov.au/capital",
             "text": "Canberra is the capital of Australia.",
-        }
+            "text_origin": "citation_linked_model_summary",
+        },
+        {
+            "title": "https://www.example.com/uncited",
+            "url": "https://www.example.com/uncited",
+            "text": "",
+            "text_origin": "search_source_without_citation",
+        },
     ]
     request = client.responses.create.call_args.kwargs
     assert request["tools"][0]["type"] == "web_search"
     assert request["tool_choice"] == "required"
     assert request["model"] == "gpt-4.1-mini"
+    assert request["include"] == ["web_search_call.action.sources"]
 
 
 def test_factual_assessment_validates_source_verdicts():

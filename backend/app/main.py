@@ -9,8 +9,10 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from app.api.routes.health import router as health_router
-from app.api.routes.questions import router as questions_router
 from app.api.routes.gateway import router as gateway_router
+from app.core.logging import configure_logging
+
+configure_logging()
 
 app = FastAPI(
     title="AI Confidence Calibration",
@@ -33,10 +35,6 @@ app.include_router(
     prefix="/api"
 )
 
-app.include_router(
-    questions_router,
-    prefix="/api"
-)
 app.include_router(
     gateway_router,
     prefix="/api"

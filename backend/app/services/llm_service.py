@@ -78,6 +78,21 @@ class LLMService:
     ) -> LLMResponse:
         return self._generate(question, prefix=None)
 
+    def generate_logical_reasoning(self, question: str) -> LLMResponse:
+        from logical.prompts import LOGICAL_REASONING_SYSTEM_PROMPT
+
+        responses = self._create_json_completion(
+            [
+                {"role": "system", "content": LOGICAL_REASONING_SYSTEM_PROMPT},
+                {"role": "user", "content": json.dumps({"question": question})},
+            ],
+            temperature=0,
+            num_samples=1,
+        )
+        steps, answer = self._parse_reasoning(responses[0].data)
+        text = "\n".join(f"Step {step.step_number}: {step.text}" for step in steps)
+        return LLMResponse(text=text, final_answer=answer, steps=steps)
+
     def generate_with_prefix(
         self,
         question: str,
@@ -235,6 +250,7 @@ class LLMService:
             model=model or self.search_model,
             tools=[{"type": "web_search", "search_context_size": "medium"}],
             tool_choice="required",
+            include=["web_search_call.action.sources"],
             input=[
                 {
                     "role": "system",
@@ -248,10 +264,28 @@ class LLMService:
             ],
         )
 
-        results: list[dict[str, str]] = []
-        seen_urls: set[str] = set()
+        results_by_url: dict[str, dict[str, str]] = {}
         for output_item in _response_value(response, "output", []) or []:
-            if _response_value(output_item, "type") != "message":
+            item_type = _response_value(output_item, "type")
+            if item_type == "web_search_call":
+                action = _response_value(output_item, "action", {})
+                if _response_value(action, "type") != "search":
+                    continue
+                for source in _response_value(action, "sources", []) or []:
+                    url = _response_value(source, "url", "")
+                    if not isinstance(url, str) or not url.startswith(("https://", "http://")):
+                        continue
+                    results_by_url.setdefault(
+                        url,
+                        {
+                            "title": url,
+                            "url": url,
+                            "text": "",
+                            "text_origin": "search_source_without_citation",
+                        },
+                    )
+                continue
+            if item_type != "message":
                 continue
             for content in _response_value(output_item, "content", []) or []:
                 if _response_value(content, "type") != "output_text":
@@ -262,20 +296,28 @@ class LLMService:
                         continue
                     url = _response_value(annotation, "url", "")
                     title = _response_value(annotation, "title", "")
-                    if not isinstance(url, str) or not url.startswith(("https://", "http://")) or url in seen_urls:
+                    if not isinstance(url, str) or not url.startswith(("https://", "http://")):
                         continue
                     excerpt = self._citation_excerpt(
                         text,
                         _response_value(annotation, "start_index", 0),
                         _response_value(annotation, "end_index", 0),
                     )
-                    if not excerpt:
-                        continue
-                    results.append({"title": str(title or url), "url": url, "text": excerpt})
-                    seen_urls.add(url)
-                    if len(results) >= max_results:
-                        return results
-        return results
+                    result = results_by_url.setdefault(
+                        url,
+                        {
+                            "title": str(title or url),
+                            "url": url,
+                            "text": "",
+                            "text_origin": "search_source_without_citation",
+                        },
+                    )
+                    if title:
+                        result["title"] = str(title)
+                    if excerpt:
+                        result["text"] = excerpt
+                        result["text_origin"] = "citation_linked_model_summary"
+        return list(results_by_url.values())[:max_results]
 
     @staticmethod
     def _citation_excerpt(text: str, start_index: int, end_index: int) -> str:
