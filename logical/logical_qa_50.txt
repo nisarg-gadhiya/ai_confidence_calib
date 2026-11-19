@@ -1,0 +1,248 @@
+50 Logical Reasoning Questions and Expected Results
+
+Question format note:
+Each item gives explicit premises followed by one yes/no question. The expected
+result uses ENTAILED, CONTRADICTED, UNKNOWN, or INCONSISTENT. The solver is
+intended to use only the premises in the question, not outside knowledge.
+
+1.
+Question: All cats are mammals. Tom is a cat. Is Tom a mammal?
+Answer: ENTAILED - Yes. The rule that all cats are mammals applies to Tom.
+
+2.
+Question: All birds are animals. Tweety is a bird. Is Tweety an animal?
+Answer: ENTAILED - Yes. The rule that all birds are animals applies to Tweety.
+
+3.
+Question: All roses are flowers. Lily is a rose. Is Lily a flower?
+Answer: ENTAILED - Yes. The rule that all roses are flowers applies to Lily.
+
+4.
+Question: All musicians are artists. Maya is a musician. Is Maya an artist?
+Answer: ENTAILED - Yes. The rule that all musicians are artists applies to Maya.
+
+5.
+Question: All squares are polygons. Tile is a square. Is Tile a polygon?
+Answer: ENTAILED - Yes. The rule that all squares are polygons applies to Tile.
+
+6.
+Question: All dogs are mammals. All mammals are animals. Rex is a dog. Is Rex an animal?
+Answer: ENTAILED - Yes. Rex is a dog, dogs are mammals, and mammals are animals.
+
+7.
+Question: All poets are writers. All writers are readers. Maya is a poet. Is Maya a reader?
+Answer: ENTAILED - Yes. The two rules connect poets to writers and writers to readers.
+
+8.
+Question: All eagles are birds. All birds are animals. All animals are living things. Kito is an eagle. Is Kito a living thing?
+Answer: ENTAILED - Yes. The three rules connect eagles to living things.
+
+9.
+Question: All oak trees are plants. Oak is an oak tree. Is Oak a plant?
+Answer: ENTAILED - Yes. The rule that all oak trees are plants applies to Oak.
+
+10.
+Question: All teachers are employees. All employees are adults. Ana is a teacher. Is Ana an adult?
+Answer: ENTAILED - Yes. The rules connect teachers to adults through employees.
+
+11.
+Question: If A then B. A is true. Is B true?
+Answer: ENTAILED - Yes. A is true, and A implies B.
+
+12.
+Question: If A then B. If B then C. A is true. Is C true?
+Answer: ENTAILED - Yes. A implies B, and B implies C.
+
+13.
+Question: If A and B then C. A is true. B is true. Is C true?
+Answer: ENTAILED - Yes. Both conditions for C are true.
+
+14.
+Question: If A then B and C. A is true. Is C true?
+Answer: ENTAILED - Yes. A implies both B and C.
+
+15.
+Question: A -> B. A is true. Is B true?
+Answer: ENTAILED - Yes. The implication and A establish B.
+
+16.
+Question: If A then B. B is true. Is A true?
+Answer: UNKNOWN - B being true does not establish that A is true.
+
+17.
+Question: Alice is taller than Bob. Bob is taller than Cara. Is Alice taller than Cara?
+Answer: ENTAILED - Yes. The taller-than relation is transitive.
+
+18.
+Question: Mia is older than Noah. Noah is older than Omar. Is Mia older than Omar?
+Answer: ENTAILED - Yes. The older-than relation is transitive.
+
+19.
+Question: EventA is before EventB. EventB is before EventC. Is EventA before EventC?
+Answer: ENTAILED - Yes. The before relation is transitive.
+
+20.
+Question: PointA is above PointB. PointB is above PointC. Is PointA above PointC?
+Answer: ENTAILED - Yes. The above relation is transitive.
+
+21.
+Question: Alex is shorter than Blair. Blair is shorter than Casey. Is Alex shorter than Casey?
+Answer: ENTAILED - Yes. The shorter-than relation is transitive.
+
+22.
+Question: NumberA is greater than NumberB. NumberB is greater than NumberC. Is NumberA greater than NumberC?
+Answer: ENTAILED - Yes. The greater-than relation is transitive.
+
+23.
+Question: All cats are mammals. Tom is a cat. Is Tom not a mammal?
+Answer: CONTRADICTED - No. The premises establish that Tom is a mammal.
+
+24.
+Question: Tom is not a cat. Is Tom a cat?
+Answer: CONTRADICTED - No. A premise explicitly states that Tom is not a cat.
+
+25.
+Question: All birds are animals. Tweety is a bird. Is Tweety a plant?
+Answer: UNKNOWN - The premises say nothing about whether Tweety is a plant.
+
+26.
+Question: If A then B. Is B true?
+Answer: UNKNOWN - The implication alone does not establish that A or B is true.
+
+27.
+Question: B is true. If A then B. Is A true?
+Answer: UNKNOWN - B and the implication do not establish A.
+
+28.
+Question: A or B. Is A true?
+Answer: UNKNOWN - The disjunction does not determine which alternative is true.
+
+29.
+Question: All cats are mammals. Tom is a mammal. Is Tom a cat?
+Answer: UNKNOWN - The premises do not establish the converse of the rule.
+
+30.
+Question: All poets are writers. Maya is a writer. Is Maya a poet?
+Answer: UNKNOWN - The rule does not say that all writers are poets.
+
+31.
+Question: Sam is tall. Is Sam athletic?
+Answer: UNKNOWN - The premise does not establish whether Sam is athletic.
+
+32.
+Question: Alice is taller than Bob. Is Bob taller than Alice?
+Answer: UNKNOWN - The premises do not establish the reverse comparison.
+
+33.
+Question: If A then B. A is true. Is C true?
+Answer: UNKNOWN - No premise connects A or B to C.
+
+34.
+Question: A is true. Is B true?
+Answer: UNKNOWN - The premise about A provides no information about B.
+
+35.
+Question: All dogs are mammals. Rex is a dog. Is Rex a bird?
+Answer: UNKNOWN - The premises do not establish whether Rex is a bird.
+
+36.
+Question: If A then B. Not B. Is A true?
+Answer: CONTRADICTED - No. If B is false, A cannot be true while the implication holds.
+
+37.
+Question: If A then B. Not B. Is A false?
+Answer: ENTAILED - Yes. The implication and not-B entail not-A.
+
+38.
+Question: A or B. Not A. Is B true?
+Answer: ENTAILED - Yes. Since A is false, B must be true for the disjunction to hold.
+
+39.
+Question: A or B. Not B. Is A true?
+Answer: ENTAILED - Yes. Since B is false, A must be true for the disjunction to hold.
+
+40.
+Question: A or B. Not A. Is A true?
+Answer: CONTRADICTED - No. A is explicitly stated to be false.
+
+41.
+Question: A is false. Is A true?
+Answer: CONTRADICTED - No. The premise explicitly states that A is false.
+
+42.
+Question: Rex is a dog. Is Rex a mammal?
+Answer: UNKNOWN - Without an explicit rule connecting dogs to mammals, this cannot be concluded.
+
+43.
+Question: Tom is a cat. Tom is not a cat. Is Tom a cat?
+Answer: INCONSISTENT - The premises assert both that Tom is a cat and that he is not.
+
+44.
+Question: A is true. A is false. Is A true?
+Answer: INCONSISTENT - The premises assign both truth and falsity to A.
+
+45.
+Question: A or B. Not A. Not B. Is A true?
+Answer: INCONSISTENT - The disjunction requires at least one alternative to be true, but both are false.
+
+46.
+Question: All cats are mammals. Tom is a cat. Tom is not a mammal. Is Tom a mammal?
+Answer: INCONSISTENT - The rule and the cat premise establish that Tom is a mammal, while another premise denies it.
+
+47.
+Question: If A then B. A is true. B is false. Is B true?
+Answer: INCONSISTENT - The implication and A establish B, but a premise states that B is false.
+
+48.
+Question: Alice is tall. Alice is not tall. Is Alice tall?
+Answer: INCONSISTENT - The premises assert both that Alice is tall and that she is not.
+
+49.
+Question: Rex is a dog. Rex is not a dog. Is Rex a dog?
+Answer: INCONSISTENT - The premises assert both that Rex is a dog and that he is not.
+
+50.
+Question: If A then B. A is true. Not B. Is A true?
+Answer: INCONSISTENT - A and the implication establish B, but another premise states that B is false.
+
+Extended multi-premise questions
+
+51.
+Question: All researchers are scientists. If someone is a scientist and someone is a paper publisher then someone is a recognized expert. All recognized experts are database users. Meera is a researcher. Meera is a paper publisher. Is Meera a database user?
+Answer: ENTAILED - Meera is a scientist, a recognized expert, and therefore a database user.
+
+52.
+Question: All engineers are problem solvers. If someone is a problem solver and someone is a safety trainee then someone is a certified operator. All certified operators are site access holders. Nia is an engineer. Nia is a safety trainee. Is Nia a site access holder?
+Answer: ENTAILED - Nia is a problem solver, then a certified operator, and therefore a site access holder.
+
+53.
+Question: All nurses are clinicians. If someone is a clinician and someone is a night-shift worker then someone is a fatigue-monitoring participant. All fatigue-monitoring participants are study participants. Asha is a nurse. Asha is a night-shift worker. Is Asha a study participant?
+Answer: ENTAILED - Asha is a clinician, then a fatigue-monitoring participant, and therefore a study participant.
+
+54.
+Question: All librarians are staff members. If someone is a staff member and someone is a cataloger then someone is a metadata specialist. All metadata specialists are archive users. Ravi is a librarian. Ravi is a cataloger. Is Ravi an archive user?
+Answer: ENTAILED - Ravi is a staff member, then a metadata specialist, and therefore an archive user.
+
+55.
+Question: All beekeepers are farmers. If someone is a farmer and someone is a conservation volunteer then someone is a biodiversity steward. All biodiversity stewards are grant eligible. Lila is a beekeeper. Lila is a conservation volunteer. Is Lila grant eligible?
+Answer: ENTAILED - Lila is a farmer, then a biodiversity steward, and therefore grant eligible.
+
+56.
+Question: All pilots are crew members. If someone is a crew member and someone is a safety officer then someone is an emergency coordinator. All emergency coordinators are certified operators. Niko is a pilot. Niko is a safety officer. Is Niko a certified operator?
+Answer: ENTAILED - Niko is a crew member, then an emergency coordinator, and therefore a certified operator.
+
+57.
+Question: All tutors are educators. If someone is an educator and someone is a mentor then someone is a scholarship reviewer. All scholarship reviewers are committee members. Elena is a tutor. Elena is a mentor. Is Elena a committee member?
+Answer: ENTAILED - Elena is an educator, then a scholarship reviewer, and therefore a committee member.
+
+58.
+Question: All software engineers are developers. If someone is a developer and someone is a security auditor then someone is an access reviewer. All access reviewers are approved users. Kai is a software engineer. Is Kai an approved user?
+Answer: UNKNOWN - The premises do not say that Kai is a security auditor, so the rules do not establish that Kai is an access reviewer or an approved user.
+
+59.
+Question: All researchers are scientists. If someone is a scientist and someone is a paper publisher then someone is a recognized expert. All recognized experts are database users. Meera is a researcher. Is Meera a database user?
+Answer: UNKNOWN - Meera is established as a scientist, but the premises do not establish that Meera publishes papers.
+
+60.
+Question: All researchers are scientists. If someone is a scientist and someone is a paper publisher then someone is a recognized expert. All recognized experts are database users. Meera is a researcher. Meera is a paper publisher. Is Meera not a database user?
+Answer: CONTRADICTED - The premises establish that Meera is a database user.

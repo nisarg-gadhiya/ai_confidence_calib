@@ -1,0 +1,201 @@
+50 Multi-Step Arithmetic Word Problems
+
+1.
+Question: A bakery makes 8 batches of 36 muffins each. It sets aside one-quarter of the muffins for a school event and packs the rest into boxes of 6. If each box sells for $15, how much does the bakery earn?
+Answer: 8 * 36 = 288 muffins. 288 * 1/4 = 72 set aside, leaving 216. 216 / 6 = 36 boxes. 36 * $15 = $540.
+
+2.
+Question: A tailor has 5 rolls of fabric, each 48 meters long. She uses three-eighths of all the fabric for uniforms and cuts the remaining fabric into 5-meter pieces. How many full pieces can she cut?
+Answer: 5 * 48 = 240 meters. 240 * 3/8 = 90 used, leaving 150. 150 / 5 = 30 pieces.
+
+3.
+Question: A school has 240 students, and three-fifths of them are going on a field trip. Eight teachers are going too. Each bus holds 36 people and costs $450 to rent. What is the minimum number of buses needed, and what is the total rental cost?
+Answer: 240 * 3/5 = 144 students. 144 + 8 = 152 people. 152 / 36 requires 5 buses. 5 * $450 = $2,250.
+
+4.
+Question: A shop receives 18 cartons of juice, with 24 bottles in each carton. During delivery, 27 bottles are damaged. The shop sells the rest in packs of 3 for $5 per pack. How much does it earn if all the packs are sold?
+Answer: 18 * 24 = 432 bottles. 432 - 27 = 405. 405 / 3 = 135 packs. 135 * $5 = $675.
+
+5.
+Question: A worker earns $22 per hour and works 8 hours a day for 5 days. She spends one-quarter of her weekly pay on rent and then spends $135 on groceries. How much money does she have left?
+Answer: $22 * 8 * 5 = $880. $880 * 1/4 = $220 rent. $880 - $220 - $135 = $525.
+
+6.
+Question: A farmer has 4 orchards with 125 orange trees in each. Each tree produces 18 oranges. Two-ninths of the oranges are unripe, and the ripe oranges are packed into crates of 28. How many full crates can be packed?
+Answer: 4 * 125 * 18 = 9,000 oranges. 9,000 * 2/9 = 2,000 unripe, leaving 7,000. 7,000 / 28 = 250 crates.
+
+7.
+Question: A 960-liter water tank is full. A farmer uses three-eighths of the water for irrigation, then uses one-fifth of what remains to clean equipment. How many liters are left?
+Answer: 960 * 3/8 = 360 liters used, leaving 600. 600 * 1/5 = 120 used for cleaning. 600 - 120 = 480 liters.
+
+8.
+Question: A tour group buys 18 adult tickets at $28 each and 12 child tickets at $16 each. The venue gives the group a discount equal to one-sixth of the ticket subtotal. The group also pays a $45 parking fee. What is the total cost?
+Answer: 18 * $28 = $504 and 12 * $16 = $192, for a $696 subtotal. $696 / 6 = $116 discount. $696 - $116 + $45 = $625.
+
+9.
+Question: A library has 7 shelves with 48 books on each shelf. It lends out five-twelfths of its books, then receives 92 donated books. The librarian distributes all the books equally among 8 carts. How many books go on each cart?
+Answer: 7 * 48 = 336 books. 336 * 5/12 = 140 lent, leaving 196. 196 + 92 = 288. 288 / 8 = 36 books per cart.
+
+10.
+Question: A driver has to travel 420 miles. On the first day, she drives two-sevenths of the route. On the second day, she drives three-fifths of the distance that remains. How many miles does she still need to travel?
+Answer: 420 * 2/7 = 120 miles, leaving 300. 300 * 3/5 = 180 miles driven on day two. 300 - 180 = 120 miles left.
+
+11.
+Question: Fourteen printers each print 65 pages per minute for 4 minutes. One-fourteenth of all the pages are smudged and discarded. The good pages are bundled in groups of 26. How many full bundles can be made?
+Answer: 14 * 65 * 4 = 3,640 pages. 3,640 / 14 = 260 smudged, leaving 3,380. 3,380 / 26 = 130 bundles.
+
+12.
+Question: A customer buys a $240 jacket and a $160 pair of shoes. The jacket is discounted by 25%, and the shoes are discounted by 15%. What is the total price after the discounts?
+Answer: The jacket costs $240 * 3/4 = $180. The shoes cost $160 * 85/100 = $136. $180 + $136 = $316.
+
+13.
+Question: A theater has 325 seats. Four-fifths of the seats are sold for a show, but 18 ticket holders later receive refunds. Each remaining ticket is worth $14. How much ticket revenue remains after the refunds?
+Answer: 325 * 4/5 = 260 tickets sold. 260 - 18 = 242 tickets kept. 242 * $14 = $3,388.
+
+14.
+Question: A bookstore receives 9 cases of novels, with 32 novels in each case. It sets aside 48 novels for display and donates one-quarter of the remaining novels. It sells the rest for $11 each. How much money does it earn?
+Answer: 9 * 32 = 288 novels. 288 - 48 = 240. 240 * 1/4 = 60 donated, leaving 180 to sell. 180 * $11 = $1,980.
+
+15.
+Question: A bookstore buys 25 boxes of books, with 18 books in each box, at a cost of $7 per book. It sells two-thirds of the books for $12 each and the rest for $5 each. What is the bookstore's profit?
+Answer: 25 * 18 = 450 books; 450 * $7 = $3,150 cost. Two-thirds of 450 is 300, earning 300 * $12 = $3,600. The remaining 150 earn 150 * $5 = $750. Total revenue is $4,350, so profit is $4,350 - $3,150 = $1,200.
+
+16.
+Question: A rectangular garden is 48 meters long and 32 meters wide. A 4-meter-wide opening is left for a gate. If fencing costs $9 per meter, how much will the fence cost?
+Answer: The perimeter is 2 * (48 + 32) = 160 meters. 160 - 4 = 156 meters of fencing. 156 * $9 = $1,404.
+
+17.
+Question: A car has 56 liters of fuel and travels 8 kilometers per liter. It completes a 320-kilometer trip. How many liters of fuel remain?
+Answer: 56 * 8 = 448 kilometers of possible travel. 448 - 320 = 128 kilometers of range left. 128 / 8 = 16 liters.
+
+18.
+Question: Nine school classes each sell 34 fundraiser tickets. One-sixth of the tickets are unsold. Each sold ticket brings in $8, and the event costs $230 to run. What is the fundraiser's profit?
+Answer: 9 * 34 = 306 tickets. 306 / 6 = 51 unsold, leaving 255 sold. 255 * $8 = $2,040 revenue. $2,040 - $230 = $1,810 profit.
+
+19.
+Question: A warehouse has 24 pallets with 35 boxes on each pallet. Each box contains 12 items, and one-tenth of all the items are damaged. The undamaged items are packed into crates of 18. How many full crates can be packed?
+Answer: 24 * 35 * 12 = 10,080 items. 10,080 / 10 = 1,008 damaged, leaving 9,072. 9,072 / 18 = 504 crates.
+
+20.
+Question: A café bakes 8 pies, each cut into 12 slices. It sells three-eighths of the slices in the morning, then sells two-fifths of the remaining slices in the afternoon. The rest are packed into boxes of 6. How many full boxes does it fill?
+Answer: 8 * 12 = 96 slices. 96 * 3/8 = 36 sold, leaving 60. 60 * 2/5 = 24 sold, leaving 36. 36 / 6 = 6 boxes.
+
+21.
+Question: A company has a monthly budget of $4,200. It spends three-sevenths on rent, then spends two-fifths of the remaining budget on supplies. How much money remains?
+Answer: $4,200 * 3/7 = $1,800 rent, leaving $2,400. $2,400 * 2/5 = $960 supplies. $2,400 - $960 = $1,440.
+
+22.
+Question: A school buys 12 computers priced at $850 each. The seller reduces the price of each computer by $75. Sales tax is 8% of the discounted computer total, and delivery costs an additional $360 with no tax. What is the total bill?
+Answer: $850 - $75 = $775 per computer. 12 * $775 = $9,300. Tax is $9,300 * 8/100 = $744. $9,300 + $744 + $360 = $10,404.
+
+23.
+Question: A club has 72 members. Five-eighths of them are adults, who pay $18 each for a trip. The remaining members are children, who pay $10 each. How much does the club collect?
+Answer: 72 * 5/8 = 45 adults, leaving 27 children. 45 * $18 = $810 and 27 * $10 = $270. $810 + $270 = $1,080.
+
+24.
+Question: A farmer has 3 fields, each with 160 trees. Each tree produces 25 kilograms of fruit. The farmer sells three-fifths of the harvest for $2 per kilogram. How much money does the farmer earn?
+Answer: 3 * 160 * 25 = 12,000 kilograms. 12,000 * 3/5 = 7,200 kilograms sold. 7,200 * $2 = $14,400.
+
+25.
+Question: A factory has 6 teams, each with 8 workers. Every worker makes 15 components per day for 4 days. The components are packed into crates that hold 40 each. How many full crates are filled?
+Answer: 6 * 8 * 15 * 4 = 2,880 components. 2,880 / 40 = 72 crates.
+
+26.
+Question: A train is carrying 540 passengers. At a station, two-ninths of them get off and 85 new passengers board. How many passengers are on the train after the station?
+Answer: 540 * 2/9 = 120 passengers get off. 540 - 120 + 85 = 505 passengers.
+
+27.
+Question: A customer buys 5 chairs at $84 each and 2 tables at $175 each. The store gives 20% off the full subtotal, then charges 10% tax on the discounted price. What is the final bill?
+Answer: 5 * $84 + 2 * $175 = $770. The discount is $770 * 20/100 = $154, leaving $616. Tax is $61.60. Final bill: $616 + $61.60 = $677.60.
+
+28.
+Question: A chef has 15 kilograms of flour. Each batch of bread uses three-quarters of a kilogram. After making 16 batches, how many kilograms of flour remain?
+Answer: 16 * 3/4 = 12 kilograms used. 15 - 12 = 3 kilograms remain.
+
+29.
+Question: An aquarium has 8 tanks with 45 fish in each tank. One-fifth of all the fish are moved to another facility. The remaining fish are divided equally among 6 tanks. How many fish are in each tank?
+Answer: 8 * 45 = 360 fish. 360 * 1/5 = 72 moved, leaving 288. 288 / 6 = 48 fish per tank.
+
+30.
+Question: A shipment contains 32 boxes of juice, with 24 bottles in each box. The store receives five-sixths of the ordered bottles, but 18 of the bottles received are damaged. How many undamaged bottles does the store receive?
+Answer: 32 * 24 = 768 bottles ordered. 768 * 5/6 = 640 received. 640 - 18 = 622 undamaged bottles.
+
+31.
+Question: A phone plan includes 1,200 minutes. A customer uses two-fifths of the minutes in the first month and one-third of what remains in the second month. How many minutes are left after the second month?
+Answer: 1,200 * 2/5 = 480 used, leaving 720. 720 * 1/3 = 240 used in month two. 720 - 240 = 480 minutes.
+
+32.
+Question: A stadium has 2,400 seats, and seven-eighths of them are sold for a game at $18 per ticket. The event costs $2,750 to operate. How much money remains after paying the operating cost?
+Answer: 2,400 * 7/8 = 2,100 tickets. 2,100 * $18 = $37,800 revenue. $37,800 - $2,750 = $35,050.
+
+33.
+Question: A school has 725 students and 19 staff members going on a trip. Each bus holds 48 people and costs $425 to rent. What is the minimum number of buses needed and the total rental cost?
+Answer: 725 + 19 = 744 people. 744 / 48 = 15.5, so 16 buses are needed. 16 * $425 = $6,800.
+
+34.
+Question: A wall is 28 meters long and 3 meters high. Builders need 50 bricks per square meter, but one-fourteenth of the bricks delivered are broken. How many usable bricks are delivered if the order contains exactly enough bricks for the wall before breakage?
+Answer: 28 * 3 * 50 = 4,200 bricks needed. 4,200 / 14 = 300 are broken. 4,200 - 300 = 3,900 usable bricks.
+
+35.
+Question: At each of 4 aid stations, 250 runners each take 3 bottles of water. The bottles are packed in cases of 24. How many full cases of water are needed?
+Answer: 250 * 3 * 4 = 3,000 bottles. 3,000 / 24 = 125 cases.
+
+36.
+Question: A charity has 840 kilograms of rice. It gives three-sevenths to one community center, then gives two-fifths of what remains to another center. How many kilograms are left for a third center?
+Answer: 840 * 3/7 = 360 kilograms, leaving 480. 480 * 2/5 = 192 given to the second center. 480 - 192 = 288 kilograms remain.
+
+37.
+Question: A store has 24 laptops priced at $1,250 each. One-sixth are sold at a 12% discount, and the rest are sold at full price. What is the total sales revenue?
+Answer: 24 / 6 = 4 discounted laptops. Each discounted price is $1,250 * 88/100 = $1,100, for $4,400. The other 20 bring in 20 * $1,250 = $25,000. Total: $29,400.
+
+38.
+Question: Four departments each have 18 employees. The office prints 35 pages for each employee. One-tenth of the pages are misprinted, and the good pages are bundled into sets of 9. How many full bundles are made?
+Answer: 4 * 18 * 35 = 2,520 pages. 2,520 / 10 = 252 misprinted, leaving 2,268. 2,268 / 9 = 252 bundles.
+
+39.
+Question: A farmer harvests 950 apples. She sells three-tenths of them and gives one-fifth of the apples that remain to a school. She packs the rest into crates of 25. How many full crates does she fill, and how many apples are left over?
+Answer: 950 * 3/10 = 285 sold, leaving 665. 665 * 1/5 = 133 donated, leaving 532. 532 / 25 = 21 full crates with 7 apples left over.
+
+40.
+Question: A household uses 650 kilowatt-hours of electricity. The first 300 kWh cost $0.12 per kWh, the next 250 kWh cost $0.15 per kWh, and the rest cost $0.20 per kWh. The bill also has an $18 service fee. What is the total bill?
+Answer: 300 * $0.12 = $36. 250 * $0.15 = $37.50. The remaining 100 cost $20. Adding the $18 fee gives $36 + $37.50 + $20 + $18 = $111.50.
+
+41.
+Question: A furniture store receives 45 tables and 6 chairs for each table. Ten percent of the chairs are damaged. If each table is sold as a set with 4 usable chairs, how many usable chairs are left after making as many complete sets as possible?
+Answer: 45 * 6 = 270 chairs. 270 * 10/100 = 27 damaged, leaving 243 usable chairs. The 45 tables use 45 * 4 = 180 chairs. 243 - 180 = 63 chairs left.
+
+42.
+Question: A hotel has 48 rooms, and three-quarters of the rooms are occupied for 2 nights. Each occupied room costs $135 per night. How much room revenue does the hotel earn?
+Answer: 48 * 3/4 = 36 occupied rooms. 36 * 2 * $135 = $9,720.
+
+43.
+Question: A sports club has 360 children. Five-twelfths sign up for swimming. One-third of the children who do not swim sign up for tennis, and everyone else plays soccer. How many children play soccer?
+Answer: 360 * 5/12 = 150 swimmers, leaving 210. 210 * 1/3 = 70 tennis players. 210 - 70 = 140 soccer players.
+
+44.
+Question: A water company fills 16 tanks with 750 liters each. It sends two-fifths of the water to one town, then sends three-eighths of what remains to another town. How many liters are left for a third town?
+Answer: 16 * 750 = 12,000 liters. 12,000 * 2/5 = 4,800 sent, leaving 7,200. 7,200 * 3/8 = 2,700 sent to the second town. 7,200 - 2,700 = 4,500 liters remain.
+
+45.
+Question: Eight workers each work 7.5 hours a day for 6 days. They earn $24 per hour for the first 40 hours each week and 1.5 times that rate for any additional hours. What is the total wage bill?
+Answer: Each worker works 7.5 * 6 = 45 hours. Regular pay is 40 * $24 = $960. Overtime pay is 5 * ($24 * 1.5) = $180. Each earns $1,140, so 8 workers earn $9,120.
+
+46.
+Question: A shop buys a device for $480. It marks the price up by 25%, then gives a customer a 10% discount on the marked price. How much profit does the shop make on the sale?
+Answer: The marked price is $480 * 1.25 = $600. The sale price is $600 * 0.90 = $540. Profit is $540 - $480 = $60.
+
+47.
+Question: A car must travel 840 miles and averages 28 miles per gallon. It starts with a full 18-gallon tank. How many gallons of fuel must the driver buy during the trip?
+Answer: 840 / 28 = 30 gallons needed. 30 - 18 = 12 gallons to buy.
+
+48.
+Question: A canteen prepares 420 sandwiches. It sells two-sevenths in the morning, then sells three-fifths of the remaining sandwiches at lunch. How many sandwiches are left for the afternoon?
+Answer: 420 * 2/7 = 120 sold in the morning, leaving 300. 300 * 3/5 = 180 sold at lunch. 300 - 180 = 120 sandwiches remain.
+
+49.
+Question: A rectangular field is 56 meters long and 38 meters wide. Two gates, each 3 meters wide, are left unfenced. If fencing costs $14 per meter, what is the total fencing cost?
+Answer: The perimeter is 2 * (56 + 38) = 188 meters. The gates account for 6 meters, leaving 182 meters to fence. 182 * $14 = $2,548.
+
+50.
+Question: Sixteen groups buy 25 tickets each for a performance. Three-tenths of the tickets are refunded before the show. The remaining tickets sell for $12 each, and the venue charges a fixed fee of $625. How much money remains after the fee?
+Answer: 16 * 25 = 400 tickets. 400 * 3/10 = 120 refunded, leaving 280 sold. 280 * $12 = $3,360. $3,360 - $625 = $2,735.

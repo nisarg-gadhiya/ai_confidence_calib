@@ -1,0 +1,201 @@
+50 Factual Questions and Answers
+
+1.
+Question: What is the capital of Australia?
+Answer: Canberra.
+
+2.
+Question: What is the capital of Japan?
+Answer: Tokyo.
+
+3.
+Question: What is the capital of Canada?
+Answer: Ottawa.
+
+4.
+Question: What is the capital of Brazil?
+Answer: Brasilia.
+
+5.
+Question: What is the capital of France?
+Answer: Paris.
+
+6.
+Question: What is the largest ocean on Earth by area?
+Answer: The Pacific Ocean.
+
+7.
+Question: What is the largest hot desert in the world by area?
+Answer: The Sahara Desert.
+
+8.
+Question: Which mountain has the highest summit above mean sea level?
+Answer: Mount Everest.
+
+9.
+Question: On which continent is the Amazon rainforest primarily located?
+Answer: South America.
+
+10.
+Question: The Great Pyramid of Giza is located in which country?
+Answer: Egypt.
+
+11.
+Question: How many recognized planets are in the Solar System?
+Answer: Eight.
+
+12.
+Question: What is the closest star to Earth?
+Answer: The Sun.
+
+13.
+Question: Which planet is closest to the Sun?
+Answer: Mercury.
+
+14.
+Question: Which planet is the largest in the Solar System?
+Answer: Jupiter.
+
+15.
+Question: Which planet is commonly called the Red Planet?
+Answer: Mars.
+
+16.
+Question: Which planet is especially known for its prominent ring system?
+Answer: Saturn.
+
+17.
+Question: What is the largest moon in the Solar System?
+Answer: Ganymede, a moon of Jupiter.
+
+18.
+Question: What is the name of Saturn's largest moon?
+Answer: Titan.
+
+19.
+Question: Which gas makes up most of Earth's atmosphere?
+Answer: Nitrogen, at about 78% of dry air by volume.
+
+20.
+Question: Which gas do plants take in from the atmosphere during photosynthesis?
+Answer: Carbon dioxide.
+
+21.
+Question: What process do plants use to convert light energy into chemical energy?
+Answer: Photosynthesis.
+
+22.
+Question: What green pigment helps plants absorb light for photosynthesis?
+Answer: Chlorophyll.
+
+23.
+Question: What is the chemical formula for water?
+Answer: H2O.
+
+24.
+Question: Which chemical element has the symbol Fe?
+Answer: Iron.
+
+25.
+Question: What is the atomic number of carbon?
+Answer: 6.
+
+26.
+Question: At what temperature does pure water boil at standard atmospheric pressure at sea level?
+Answer: 100 degrees Celsius.
+
+27.
+Question: How many chambers does a typical human heart have?
+Answer: Four.
+
+28.
+Question: What does the abbreviation DNA stand for?
+Answer: Deoxyribonucleic acid.
+
+29.
+Question: How many bones are typically found in an adult human skeleton?
+Answer: 206.
+
+30.
+Question: What is the largest animal known to have lived on Earth?
+Answer: The blue whale.
+
+31.
+Question: What do honeybees make from nectar?
+Answer: Honey.
+
+32.
+Question: What feature distinguishes vertebrates from invertebrates?
+Answer: Vertebrates have a backbone; invertebrates do not.
+
+33.
+Question: What is the chemical name of vitamin C?
+Answer: Ascorbic acid.
+
+34.
+Question: Can sound travel through a vacuum?
+Answer: No. Sound requires a material medium, such as a gas, liquid, or solid, to travel.
+
+35.
+Question: What is the SI unit of force?
+Answer: The newton.
+
+36.
+Question: What is the exact speed of light in a vacuum?
+Answer: 299,792,458 meters per second.
+
+37.
+Question: Approximately how long is one mean solar day on Earth?
+Answer: 24 hours.
+
+38.
+Question: Approximately how long does Earth take to orbit the Sun once?
+Answer: About 365.25 days.
+
+39.
+Question: What is the main astronomical cause of Earth's seasons?
+Answer: Earth's axis is tilted relative to its orbital plane, and Earth revolves around the Sun.
+
+40.
+Question: What was the first artificial satellite to orbit Earth, and which country launched it?
+Answer: Sputnik 1, launched by the Soviet Union in 1957.
+
+41.
+Question: Which mission first landed humans on the Moon, and who was the first person to walk on its surface?
+Answer: Apollo 11; Neil Armstrong was the first person to walk on the Moon.
+
+42.
+Question: In what year did World War II end?
+Answer: 1945.
+
+43.
+Question: On what date was the United States Declaration of Independence adopted?
+Answer: July 4, 1776.
+
+44.
+Question: Which English king agreed to the Magna Carta in 1215?
+Answer: King John.
+
+45.
+Question: In what year did the French Revolution begin?
+Answer: 1789.
+
+46.
+Question: Who was the first president of the United States?
+Answer: George Washington.
+
+47.
+Question: Who is commonly credited with introducing movable-type printing to Europe in the 15th century?
+Answer: Johannes Gutenberg.
+
+48.
+Question: Who discovered penicillin, and in what year?
+Answer: Alexander Fleming discovered it in 1928.
+
+49.
+Question: Which scientist published a widely recognized early periodic table in 1869?
+Answer: Dmitri Mendeleev.
+
+50.
+Question: Who wrote the play Hamlet?
+Answer: William Shakespeare.
