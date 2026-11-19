@@ -1,18 +1,15 @@
-export default function ErrorAlert({
-  stepNumber,
-}) {
-
-  if (!stepNumber) {
-    return null;
-  }
-
+export default function ErrorAlert({ message, onRetry }) {
+  if (!message) return null;
   return (
-
-    <p>
-      Lowest-confidence step:
-      {" "}
-      Step {stepNumber}
-    </p>
-
+    <div className="error-message" role="alert">
+      <span className="error-icon" aria-hidden="true">!</span>
+      <div>
+        <strong>Something went wrong.</strong>
+        <span>{message}</span>
+      </div>
+      {onRetry && (
+        <button type="button" className="ghost-button" onClick={onRetry}>Retry</button>
+      )}
+    </div>
   );
 }

@@ -1,29 +1,19 @@
-export default function ReasoningChain({
-  steps,
-}) {
+import StepConfidence from "./StepConfidence";
 
+export default function ReasoningChain({ steps, flaggedId, selectedId, onSelect }) {
+  if (!steps.length) return <p className="chart-empty">No reasoning steps were returned.</p>;
   return (
-
-    <section>
-
-      {steps.map((step) => (
-
-        <article
-          key={step.step_number}
-        >
-
-          <h3>
-            Step {step.step_number}
-          </h3>
-
-          <p>
-            {step.step_text}
-          </p>
-
-        </article>
-
+    <div className="timeline">
+      {steps.map((step, i) => (
+        <div className="timeline-item" key={step.id} style={{ animationDelay: `${i * 60}ms` }}>
+          <StepConfidence
+            step={step}
+            flagged={step.id === flaggedId}
+            selected={step.id === selectedId}
+            onSelect={onSelect}
+          />
+        </div>
       ))}
-
-    </section>
+    </div>
   );
 }

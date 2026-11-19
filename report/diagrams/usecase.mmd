@@ -1,0 +1,21 @@
+flowchart LR
+    US(["End user"])
+    EX(["Researcher / examiner"])
+    subgraph Calibra
+        UC1(["Ask a question"])
+        UC2(["View answer + confidence"])
+        UC3(["Inspect reasoning chain and signals"])
+        UC4(["Inspect sources / premises"])
+        UC5(["Browse run history and analytics"])
+        UC6(["Load calibration_runs.json"])
+        UC7(["Run pilot experiments"])
+        UC8(["Compute calibration metrics"])
+    end
+    US --> UC1 --> UC2
+    US --> UC3
+    US --> UC4
+    EX --> UC5
+    EX --> UC6
+    EX --> UC7
+    EX --> UC8
+    UC5 -.-> UC3

@@ -1,0 +1,14 @@
+flowchart TD
+    subgraph Signals
+        S1["Self-verification<br/>p_true / LLM confidence"]
+        S2["Consistency<br/>cluster share / verdict agreement"]
+        S3["Domain evidence<br/>token prob · evidence score · logical validity"]
+    end
+    S1 & S2 & S3 --> F["Weighted fusion f<br/>(type-adaptive or fixed)"]
+    F --> C{"Calibrator"}
+    C -->|arithmetic, trained| XG["XGBoost P(correct)"]
+    C -->|arithmetic, default| PR["Proxy = f"]
+    C -->|factual, logical| SG["σ(−1 + 3.2 f)"]
+    XG & PR & SG --> SC["Step confidence c_i"]
+    SC --> AGG["Answer confidence<br/>min (arithmetic) · geometric mean of<br/>essential claims (factual, logical)"]
+    SC --> LOC["Error localisation<br/>argmin_i c_i"]

@@ -1,9 +1,16 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from functools import lru_cache
 
 from app.core.config import settings
 from app.services.llm_service import LLMService
+
+
+@dataclass(frozen=True)
+class FactualGeneration:
+    reasoning_steps: list[str]
+    final_answer: str | None
 
 
 def _fallback_reasoning_steps(question: str) -> list[str]:
@@ -45,16 +52,30 @@ def get_factual_llm_service() -> LLMService | None:
     )
 
 
-def generate_reasoning_steps(question: str) -> list[str]:
-    """Generate a short factual reasoning plan using the shared LLM service when available."""
-    try:
-        llm = get_factual_llm_service()
-        if llm is None:
-            raise ValueError("LLM_API_KEY is not configured.")
-        generated = llm.generate_reasoning(question)
-        if getattr(generated, "steps", None):
-            return [step.text for step in generated.steps]
-    except Exception:
-        pass
+def generate_factual_response(question: str) -> FactualGeneration:
+    """Generate factual reasoning steps and preserve the model's direct answer."""
+    llm = get_factual_llm_service()
+    if llm is None:
+        return FactualGeneration(_fallback_reasoning_steps(question), None)
 
-    return _fallback_reasoning_steps(question)
+    generated = llm.generate_factual_reasoning(question)
+    reasoning_steps = [
+        step.text.strip()
+        for step in generated.steps
+        if isinstance(step.text, str) and step.text.strip()
+    ]
+    if not reasoning_steps:
+        reasoning_steps = _fallback_reasoning_steps(question)
+
+    final_answer = generated.final_answer
+    if not isinstance(final_answer, str) or not final_answer.strip():
+        final_answer = None
+    else:
+        final_answer = final_answer.strip()
+
+    return FactualGeneration(reasoning_steps, final_answer)
+
+
+def generate_reasoning_steps(question: str) -> list[str]:
+    """Generate factual reasoning steps using the shared LLM service when available."""
+    return generate_factual_response(question).reasoning_steps

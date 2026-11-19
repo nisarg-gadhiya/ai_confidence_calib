@@ -1,0 +1,14 @@
+flowchart TD
+    Q["Question"] --> G["Generate numbered solution<br/>JSON steps + final_answer, T=0"]
+    G --> LOOP{"For each step i"}
+    LOOP --> S["Sample K=5 next-step continuations<br/>given steps 1..i-1, T=0.8, log-probs"]
+    S --> V["Verifier LLM: p_true, rationale,<br/>step type, semantic cluster ids"]
+    V --> C["Consistency = largest cluster share<br/>Semantic entropy = normalised H"]
+    S --> T["Token probability = exp(mean log-prob)<br/>Token entropy"]
+    C & T & V --> F["Type-adaptive weighted fusion"]
+    F --> X{"STEP_CALIBRATOR_PATH set?"}
+    X -- yes --> XG["XGBoost P(step correct)"]
+    X -- no --> PX["Proxy: type_adaptive_weighted_proxy"]
+    XG & PX --> OUT["Step confidence"]
+    OUT --> LOOP
+    LOOP -- done --> AGG["Answer confidence = min over steps<br/>Flagged step = argmin"]

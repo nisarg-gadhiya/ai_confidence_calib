@@ -22,6 +22,7 @@ frontend/dist/
 data/raw/*
 data/processed/*
 data/experiments/*
+backend/data/calibration_runs.json*
 
 # Logs
 *.log
@@ -32,3 +33,6 @@ data/experiments/*
 
 # OS
 .DS_Store
+# report build environment
+report/.venv/
+report/tools/node_modules/

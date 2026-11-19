@@ -1,0 +1,239 @@
+Date:18.08.26
+FYP 
+AI Confidence Calibration 
+Problem Statement and Proposed Solution
+1. Background
+Large Language Models (LLMs) generate fluent, grammatically confident text regardless of whether the underlying content is factually correct. This creates a fundamental reliability gap: the tone of an LLM's output carries no information about its actual correctness. A model can state a fabricated fact with the exact same linguistic confidence as a verified one, a phenomenon widely documented in the literature as hallucination.
+According to the research this project is grounded in, LLM uncertainty arises from two distinct sources, and any calibration system must account for both:
+Aleatoric uncertainty - uncertainty inherent to the question itself. Some questions are genuinely ambiguous, underspecified, or have multiple valid answers; no amount of model capability resolves this kind of uncertainty, because it isn't a property of the model , it's a property of the question.
+Epistemic uncertainty - uncertainty arising from the model's own limitations. The model simply does not have reliable knowledge of the answer, whether due to gaps in training data, poor generalization, or genuine reasoning failure. This is the category most associated with hallucination, and the one a calibration system can meaningfully act on.
+Existing approaches to estimating LLM confidence fall into four broad families, each with a distinct mechanism and a distinct blind spot:
+2. Problem Statement
+Despite the range of methods available for estimating LLM confidence, every one of the four established approaches , and every system that combines them , operates exclusively at the level of the final answer. They treat a model's response as an atomic, indivisible unit: either the whole answer is trustworthy, or it isn't. This is a significant limitation for any response that involves multi-step reasoning (mathematical derivations, multi-hop factual reasoning, chain-of-thought explanations), for two concrete reasons:
+Error localization is impossible. A final-answer confidence score of "42% confident" tells a user that something is probably wrong, but not where. In a five-step mathematical derivation, the score gives no indication of whether the error occurred in step 1 (a misread input), step 3 (an arithmetic slip), or step 5 (a flawed conclusion drawn from otherwise-correct intermediate steps). This is a material limitation both for end users trying to trust or correct an answer, and for any downstream system trying to intervene on a reasoning chain before an error compounds.
+Confidence signals get diluted across long outputs. A single overall confidence score computed from token-level or consistency-based signals across an entire multi-step response averages together high-confidence and low-confidence segments. A model can be extremely confident through four correct steps and genuinely uncertain in exactly one problematic step , but a final-answer-only score smooths this into an unremarkable middle-of-the-range number that obscures the actual location and severity of the risk.
+There is, to date, no established method that estimates confidence at each reasoning step individually and uses the resulting step-level profile to localize where in a response an error is most likely to have occurred, rather than only flagging that the response as a whole may be unreliable.
+3. Research Gap
+Synthesizing the four existing method families against this limitation:
+Verbalizing and latent-information methods could, in principle, be computed at any granularity (including per-step), but existing work applies them almost exclusively to the response as a whole.
+Consistency-based and semantic-clustering methods are inherently well-suited to step-level application , each reasoning step could itself be resampled and clustered , but existing work resamples and clusters entire responses, not individual steps within them.
+No existing framework combines all four method families and applies them at step-level granularity and adapts which signals are trusted based on the type of reasoning step being evaluated (a step in a math derivation has different failure modes than a step in a multi-hop factual chain).
+This is the gap this project addresses.
+4. Proposed Solution
+4.1 Core idea
+Rather than producing a single confidence score for a complete response, this project proposes decomposing the model's response into its constituent reasoning steps and computing an independent confidence estimate for each step, using the same multi-signal fusion approach validated at the response level in the existing literature , token-level statistics, cross-sample consistency, internal hidden-state signals, self-verification, and (where applicable) external evidence , but applied per-step rather than only once per response.
+The resulting output is not a single number but a confidence profile across the reasoning chain:
+Step 1: "Total apples = 5 baskets × 8 apples"     → Confidence: 96%
+Step 2: "5 × 8 = 40"                                → Confidence: 98%
+Step 3: "Remaining after giving away 12 = 40 - 12"  → Confidence: 91%
+Step 4: "40 - 12 = 30"                              → Confidence: 54%  ← flagged
+Step 5: "Final answer: 30 apples"                   → Confidence: 54%  (inherited)
+This directly enables error localization , a user or downstream system can be pointed to the exact step where confidence drops, rather than being told only that the final answer of "30" might be wrong.
+4.2 How the existing four method families map onto step-level estimation
+Each of the four established uncertainty-estimation families extends naturally to this per-step framing, and the project's contribution is in making this extension systematic and fused rather than ad hoc:
+Verbalizing, per step: after generating a step, prompt the model to report its confidence in that specific step alone, conditioned on the steps preceding it , rather than a single end-of-response self-report.
+Latent information, per step: compute token-level probability and entropy statistics restricted to the token span of each individual step, rather than averaged across the entire response , isolating exactly which segment of the generation shows internal hesitation.
+Consistency-based, per step: resample the continuation from a fixed prefix of correct-so-far steps, and check whether the model reliably reproduces the same next step , divergence at a specific step boundary indicates that step, specifically, is where the model's reasoning becomes unstable.
+Semantic clustering, per step: cluster the resampled continuations at each step boundary by meaning (not exact text), the same entailment-based approach used at the response level, applied at each intermediate point in the chain.
+4.3 Adaptive fusion across step types
+Different reasoning steps have different characteristic failure modes, mirroring the query-type-adaptive principle already established for whole-response calibration: an arithmetic step's reliability is best assessed through consistency across resampled continuations (does the model reliably recompute the same result), while a factual-recall step embedded in a reasoning chain is better assessed through the retrieval-verification signal (does an external source support this specific intermediate claim). The proposed system classifies each step by type before fusing its signals, applying the appropriate combination of the four method families rather than a single fixed formula across all steps.
+4.4 Why this is feasible as an extension rather than a separate system
+This does not require building a new pipeline from scratch , it is a structural extension of an already-designed response-level calibration pipeline (feature extraction across token statistics, self-verification, semantic consistency, and retrieval, fused via a learned calibration model). The core change is in the unit of analysis: segmenting a response into steps before feature extraction, computing the existing feature set per segment instead of once per response, and training the calibration model to predict per-step correctness rather than only whole-response correctness. The final-answer confidence score remains available as a byproduct , it can be derived from the step-level profile (e.g., propagating the lowest-confidence step forward, or a weighted aggregation) , so this extension subsumes rather than replaces the original response-level capability.
+4.5 Expected contribution
+The concrete, evaluable contribution is: a confidence-calibration system that not only reports how trustworthy a final answer is, but identifies which specific reasoning step within that answer is the likely source of unreliability , something no existing verbalizing, latent-information, consistency-based, or semantic-clustering method currently provides at this granularity. This is evaluated by measuring whether the step flagged as lowest-confidence correlates with the step containing the actual ground-truth error, on reasoning-heavy benchmarks (GSM8K's step-by-step solutions being a natural fit, since each step's correctness can be independently verified against the reference derivation).
+Objectives, Methodology, and Evaluation
+5. Objectives
+Primary Objective - To design, implement, and evaluate a confidence calibration system that estimates reliability at the level of individual reasoning steps within an LLM's response, rather than only at the level of the final answer enabling localization of the specific step most likely responsible for an error.
+Secondary Objectives
+To decompose LLM-generated multi-step responses into discrete, independently analyzable reasoning steps in a consistent, automatable way.
+To extend the four established uncertainty-estimation families (verbalizing, latent-information, consistency-based, semantic-clustering) from whole-response application to per-step application.
+To build a step-type classifier that distinguishes reasoning-step categories (e.g., arithmetic computation, factual recall, logical inference) and route the appropriate confidence signals per type , extending the query-type adaptivity already established at the response level down to the step level.
+To train a calibration model that fuses per-step signals into a step-level P(correct) estimate, and to derive an aggregate final-answer confidence score from the resulting step-level profile.
+To evaluate whether the lowest-confidence step identified by the system correlates with the actual location of errors in ground-truth-verifiable reasoning chains (using GSM8K's step-structured solutions as the primary testbed).
+To compare the proposed step-level system against existing whole-response calibration baselines, both in terms of final-answer calibration quality (ECE, AUROC) and in terms of a new error-localization metric not measurable by whole-response baselines at all.
+6. Methodology , Step by Step
+Step 1: Dataset Selection and Preparation
+Select datasets where responses are naturally multi-step and where each intermediate step's correctness can be independently verified against a reference solution:
+GSM8K , primary dataset. Math word problems with reference solutions that already exist as explicit step sequences, making ground-truth step-level correctness directly extractable (each step's arithmetic can be independently checked, and reference solutions typically show the exact derivation).
+StrategyQA / HotpotQA , secondary, for multi-hop factual reasoning where each "hop" functions as a reasoning step, and each hop's factual claim can be checked against retrieval evidence.
+Retain TruthfulQA / MMLU as single-step comparison baselines , questions with essentially one reasoning step, useful for confirming the step-level system correctly degrades to (and doesn't underperform) standard whole-response calibration when there's effectively only one step to evaluate.
+For each dataset, obtain or construct ground-truth step-level correctness labels , not just a final right/wrong label, but which specific step(s), if any, contain an error. GSM8K's reference solutions make this directly derivable; for HotpotQA-style multi-hop data, each hop's supporting fact can be checked against the provided supporting-document annotations.
+Step 2: Response Generation and Step Segmentation
+Generate responses from the base LLM using explicit step-eliciting prompting (e.g., "solve step by step, numbering each step"), so that step boundaries are structurally marked in the output rather than needing to be inferred after the fact. As in the response-level pipeline, generate:
+1 greedy full response (segmented into steps)
+K=5 stochastic full responses, generated from the same fixed prefix up to and including each step, so that step-level resampling reflects "given everything correct so far, how does the model continue from exactly this point" rather than resampling entire independent responses (which would conflate uncertainty accumulated from all prior steps with the uncertainty of the step actually being evaluated).
+This prefix-conditioned resampling is the key mechanical difference from the response-level pipeline: instead of 5 independent full generations, generate 5 continuations branching from each step boundary, isolating that specific step's uncertainty from the steps before it.
+Step 3: Per-Step Feature Extraction
+For each step in each response, compute the same categories of confidence signal used at the response level, restricted to that step's token span and its branching continuations:
+Token-level statistics (avg log-probability, entropy) computed only over the tokens belonging to this specific step, not the whole response , isolating exactly where in the chain hesitation occurs.
+Step-level semantic consistency , cluster the K continuations branching from this step boundary by whether they produce the same (or an equivalent) next step, using the same entailment-based clustering approach as the response-level semantic entropy feature, but applied to single-step continuations rather than full answers.
+Step-level agreement ratio , the cheaper backup version of the above, as in the response-level pipeline.
+Hidden-state signal at the step boundary , the internal representation at the point where this step concludes, used the same way as the response-level hidden-state feature, to catch internal shakiness specific to this step that doesn't surface in the step's text.
+Step 4: Per-Step Self-Verification
+Prompt the model to verify each step individually, conditioned on the steps preceding it: "Given steps 1 through N-1 (shown), is step N correct?" , the per-step analogue of the response-level sample-conditioned P(True) verification, producing a p_true value per step rather than one per response.
+Step 5: Step-Type Classification
+Classify each step by its reasoning type before feature extraction and verification are finalized , e.g., arithmetic computation, factual recall, logical inference, unit conversion , the per-step analogue of the response-level query-type classifier. This classification determines which signals are weighted most heavily for that step (e.g., consistency-based resampling is highly informative for arithmetic steps; retrieval-based verification is more relevant for factual-recall steps embedded in a longer chain).
+Step 6: Step-Level Feature Vector and Calibration Model
+Assemble each step's features (token statistics, consistency, hidden-state signal, self-verification, step type) into a feature vector, paired with the ground-truth step-correctness label from Step 1. Train a calibration model , following the same fixed-weight baseline (XGBoost) versus adaptive/gated model structure as the response-level pipeline , to predict P(step is correct) from the step-level feature vector, with the step-type classification driving the adaptive weighting.
+Step 7: Aggregation to Final-Answer Confidence
+Derive an overall response-level confidence score from the sequence of step-level scores , e.g., by propagating the minimum step-confidence forward (a chain is only as reliable as its weakest step), or a weighted aggregation that accounts for how errors in early steps compound through later ones. This ensures the system still produces the familiar single "73% confident" style output for users who want it, in addition to the step-level breakdown.
+Step 8: Error Localization
+For any response the system flags as likely containing an error, report the specific step with the lowest confidence as the probable error location, alongside the plain-language explanation of which signals drove that step's score down , extending the response-level explanation module (Step 10 of the original pipeline) to operate at step granularity.
+7. Evaluation
+7.1 Standard calibration metrics (applied at both levels)
+Retain all metrics from the response-level pipeline , ECE, MCE, Brier Score, NLL, AUROC, reliability diagrams , computed on the final-answer confidence score (Step 7's aggregate output), to confirm the step-level system is at least as well-calibrated as the existing whole-response baseline at the final-answer level, not just at the step level.
+7.2 New metric: Error localization accuracy
+This is the metric that specifically evaluates the project's core contribution, and has no equivalent in whole-response calibration methods (they have nothing to localize).
+For every response where the final answer is incorrect and a ground-truth error step is known (from Step 1's labels), check whether the step the system flags as lowest-confidence matches the actual step containing the error. Report this as a top-1 localization accuracy (does the single lowest-confidence step match the true error step) and a top-2 accuracy (does the true error step fall among the two lowest-confidence steps), since reasoning errors sometimes cascade and a step immediately following the true error can also legitimately show reduced confidence.
+7.3 Baseline comparisons
+Whole-response calibration baseline (the original response-level CalibraLM pipeline) , establishes whether step-level decomposition improves or degrades final-answer ECE/AUROC relative to treating the response as atomic.
+Naive uniform step attribution , a simple baseline that, given a low whole-response confidence score, attributes it equally across all steps (i.e., assumes no localization information at all) , this establishes the floor that any real localization capability needs to beat.
+SelfCheckGPT-style whole-response consistency, retained as the black-box reference point from the original pipeline, confirming the step-level approach still outperforms a black-box method even when adding the additional complexity of step decomposition.
+7.4 Ablation studies
+Report step-level ECE and localization accuracy separately per step type (arithmetic, factual recall, logical inference) , mirroring the per-query-type breakdown from the response-level pipeline's evaluation, and for the same reason: it tests whether the adaptive per-type weighting is actually earning its complexity, rather than only showing an aggregate improvement that could be driven by one well-represented step type.
+Literature Review
+8. Literature Review
+This section positions the proposed step-level extension against the four established uncertainty-estimation families, reviewing the key paper(s) grounding each family, then situates the project's contribution relative to prior work in confidence calibration.
+8.1 Verbalizing Methods
+Kadavath et al. (2022), Language Models (Mostly) Know What They Know, https://arxiv.org/abs/2207.05221
+This is the foundational paper for asking a model to self-report its confidence rather than inferring it from external statistics. Its central finding is that models can be prompted to output a calibrated "P(True)" probability for a proposed answer, and , critically for this project's design , that this self-assessment improves substantially when the model is shown several of its own sampled answers before judging one specific proposal, rather than judging in isolation. The paper also documents the limitation this project must account for: verbalized confidence degrades in reliability precisely where a model's underlying knowledge is weakest, since the same knowledge gap that produces an incorrect answer also impairs the model's ability to recognize the error.
+Relevance to the proposed extension: Kadavath et al. apply sample-conditioned self-verification only at the level of a complete answer. The proposed system applies the same sample-conditioning principle at each individual reasoning step, using the K continuations branching from that specific step (Step 2 of the Methodology) as the conditioning context , rather than the K full responses used in the original method.
+8.2 Latent Information Methods
+Token-level probability and entropy statistics, and internal hidden-state probing, form this family. Two representative papers:
+Chen et al. (2024), INSIDE: LLMs' Internal States Retain the Power of Hallucination Detection, ICLR 2024, https://arxiv.org/abs/2402.03744 , introduces EigenScore, deriving a confidence signal from the covariance structure of hidden-state embeddings across multiple sampled responses, grounded formally in the differential entropy of a Gaussian fit to those embeddings.
+Kossen et al. (2024), Semantic Entropy Probes, https://arxiv.org/abs/2406.15927, trains a lightweight probe to predict semantic entropy directly from a single generation's hidden state, removing the need for resampling at inference time.
+Relevance to the proposed extension: both methods compute hidden-state signals over a pooled representation of an entire response. Neither computes a hidden-state signal restricted to a specific span of tokens within a longer, multi-step generation. The proposed system extracts hidden-state and token-probability statistics restricted to each step's token span specifically, isolating which segment of a longer chain shows internal uncertainty rather than averaging this signal across an entire multi-step response , which, per the Problem Statement, dilutes exactly the information a localization system needs.
+8.3 Consistency-Based Methods
+Manakul, Liusie & Gales (2023), SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models, EMNLP 2023, https://arxiv.org/abs/2303.08896
+SelfCheckGPT resamples a full response multiple times and checks whether the samples remain consistent, without requiring access to model internals , established as the standard black-box reference point in this literature. Its central limitation, directly relevant to this project's motivation, is that it can only detect inconsistency; a model that is wrong the same way every time it is resampled produces high apparent consistency and is therefore missed entirely by this family of methods, regardless of whether resampling happens at the response or step level.
+Relevance to the proposed extension: the proposed system resamples from a fixed prefix up to each step boundary rather than resampling entire independent responses from scratch. This is a structural change, not just a granularity change , resampling whole responses conflates the uncertainty of every step in the chain into one number, while prefix-conditioned resampling isolates the uncertainty contributed by exactly one step, holding everything before it fixed.
+8.4 Semantic Clustering Methods
+Kuhn, Gal & Farquhar (2023), Semantic Uncertainty, ICLR 2023, https://arxiv.org/abs/2302.09664, and Farquhar et al. (2024), Detecting hallucinations in LLMs using semantic entropy, Nature 2024, https://www.nature.com/articles/s41586-024-07421-0 
+These establish semantic entropy: instead of exact-text matching across resampled responses, group responses by mutual (bidirectional) entailment using a Natural Language Inference model, and compute entropy over the resulting cluster distribution rather than over raw response counts. This is consistently the strongest single signal among the four families when applied at the response level, since it correctly treats paraphrases of the same underlying claim as agreement rather than disagreement , a distinction exact-match and even embedding-cosine-similarity approaches fail to make reliably.
+Relevance to the proposed extension: semantic entropy, as published, clusters complete final answers. Applying it to individual reasoning steps requires two accommodations that this project addresses directly: (1) intermediate steps are often shorter and more formulaic than final answers (e.g., a single arithmetic operation), which may reduce the discriminative power of NLI-based entailment clustering at that granularity , this is empirically tested rather than assumed in the proposed evaluation; and (2) for arithmetic-type steps specifically, the same domain-specific substitution used in the response-level pipeline (matching final numeric values rather than NLI entailment) is applied at the step level.
+8.5 Positioning the Contribution
+No reviewed work applies uncertainty estimation below the level of a complete model response. Verbalizing and latent-information methods are, in principle, granularity-agnostic , nothing in Kadavath et al. or the INSIDE/SEP papers structurally prevents step-level application , but the published methods and their reported experiments operate exclusively at the response level. Consistency-based and semantic-clustering methods, by contrast, require a structural change to be applied at step level: naively resampling and clustering full responses cannot isolate a single step's contribution to overall uncertainty the way prefix-conditioned, step-boundary resampling can.
+The gap this project addresses is therefore twofold: (1) no existing system extends any of the four families to step-level granularity with the structural adaptations (prefix-conditioned resampling, step-restricted token statistics) that granularity change requires, and (2) no existing system uses the resulting step-level signal for error localization , identifying which specific step in a reasoning chain is the probable source of an error , as opposed to only producing a single trustworthiness estimate for the response as a whole.
+Timeline / Work Plan
+3-Month (12-Week) Plan
+9. Timeline
+Given the scope of the extension (step-level decomposition of an already-designed response-level pipeline), the plan below front-loads infrastructure and data work in Month 1, builds the core step-level pipeline in Month 2, and reserves Month 3 entirely for evaluation, ablation, and writeup , since a calibration project is only as credible as its evaluation, and that stage should not be compressed.
+Month 1 , Foundations, Data, and Response-Level Baseline
+Week 1: Setup and literature finalization
+Finalize environment (base LLM , Qwen2.5-7B-Instruct or Llama-3.1-8B-Instruct, inference framework, NLI model, embedding model)
+Set up GSM8K, TruthfulQA, MMLU loaders; identify or construct a HotpotQA/StrategyQA subset with step-level (hop-level) ground truth
+Finalize the literature review and confirm exact prompting templates from Kadavath et al. and the semantic entropy papers
+Week 2: Response-level pipeline (baseline system)
+Implement Step 2 (generation: greedy + K=5 sampling), storing logits and hidden states
+Implement Step 3 features 3A–3E (token probability, entropy, length, semantic entropy via NLI clustering, agreement ratio) at the response level , this is your working baseline and also the system your step-level extension will be compared against
+Implement Step 4 (sample-conditioned self-verification)
+Week 3: Complete response-level baseline
+Implement Step 3F (hidden-state signal , SEP is recommended over EigenScore here given the 3-month budget, since it avoids paying the K=5 generation cost twice once step-level resampling is added in Month 2)
+Implement Step 6 (retrieval verification) restricted to factual-QA subset
+Implement Step 7 (query-type classifier) and Step 8 (feature vector assembly)
+Week 4: Response-level calibration model and checkpoint
+Train Step 9a (XGBoost baseline) on response-level features
+Compute initial ECE/AUROC/Brier on held-out data , this is your Month-1 checkpoint deliverable: a working, evaluated response-level calibration system, functioning as both a milestone and the baseline your step-level system must beat later
+Meet with supervisor to review baseline results before proceeding to the step-level extension
+Month 2 , Step-Level Extension (Core Contribution)
+Week 5: Step segmentation and ground-truth step labels
+Implement step-eliciting prompting and automatic step-boundary segmentation
+Build ground-truth step-level correctness labels: extract from GSM8K reference solutions (arithmetic step-by-step checking) and HotpotQA supporting-fact annotations
+Validate segmentation quality on a small manually-checked sample before scaling up
+Week 6: Prefix-conditioned resampling
+Implement branching generation: K=5 continuations from each step boundary, conditioned on a fixed correct-so-far prefix
+This is the most infrastructure-heavy week , budget extra time here, as it's a genuine engineering departure from Month 1's independent full-response sampling
+Week 7: Step-level feature extraction
+Restrict token-probability/entropy features (3A/3B) to each step's token span
+Apply step-level semantic clustering (3D) to the branching continuations, including the arithmetic-domain substitution (final-numeric-value matching) for math steps
+Compute step-level hidden-state signal and step-level self-verification (Step 4's per-step analogue)
+Week 8: Step-type classifier and step-level feature assembly
+Build the step-type classifier (arithmetic / factual recall / logical inference)
+Assemble step-level feature vectors, paired with ground-truth step labels
+Month-2 checkpoint: a working step-level feature pipeline producing labeled data ready for calibration model training
+Month 3 , Calibration Model, Evaluation, and Writeup
+Week 9: Step-level calibration model
+Train the step-level fixed-weight baseline (9a) and the adaptive/gated model (9b), using step-type as the gating input
+Implement Step 7 of the Methodology (aggregation to final-answer confidence , e.g., minimum-step propagation)
+Week 10: Full evaluation
+Compute standard calibration metrics (ECE, MCE, Brier, NLL, AUROC, reliability diagrams) on the aggregated final-answer output
+Compute the new error-localization accuracy metric (top-1 and top-2) against ground-truth error steps
+Run baseline comparisons: whole-response pipeline (Month 1), naive uniform step attribution, SelfCheckGPT
+Week 11: Ablation studies and analysis
+Per-step-type ECE and localization accuracy breakdown
+Feature-importance / SHAP analysis on the step-level calibration model
+Investigate any unexpected results (e.g., if semantic clustering underperforms at step granularity as flagged as a risk in the Literature Review) and document findings honestly, including negative results if they occur
+Week 12: Final report, presentation, and buffer
+Consolidate all results into the final report
+Prepare defense/presentation materials
+Reserved buffer time for any slippage from earlier weeks , a 12-week plan for a system with this many moving parts should not assume zero delays
+CalibraLM 
+The goal
+Given a question an LLM has answered, output a trustworthy confidence score , like "73% likely correct" , instead of just trusting how confident the model sounds. The pipeline does this by gathering many independent clues about the answer, then training a model to combine those clues intelligently.
+Step 1 , Datasets
+Start with question sets where the correct answer is already known:
+TruthfulQA (tricky factual questions)
+GSM8K (math word problems)
+MMLU (general knowledge)
+PopQA / NQ slice (added so the retrieval module has something to actually check against)
+Each question also gets a correctness label, computed independently , exact-match for math/MMLU, a separate judge call for free-form answers. This label is kept completely separate from anything the pipeline will later compute, so nothing downstream can accidentally "cheat" by predicting a label that was secretly derived from itself.
+Step 2 , Generation
+For every question, the model produces:
+1 greedy answer (no randomness) , this is "the official answer" shown to a user
+5 sampled answers (small randomness added) , these exist purely to see how much the model's output wobbles
+The idea: if the model truly knows something, all 5 samples will land on the same answer even if worded differently. If it's guessing, the 5 samples will diverge. You also save some internal data (word-by-word confidence, internal "thinking" snapshots) for use later.
+Step 3 , Feature Extraction (the seven clues)
+For each answer, compute seven different "confidence clues":
+3A , Token probability: how sure the model was, word by word
+3B , Entropy: how many other words were nearly as likely at each step
+3C , Response length: a weak, free clue , overly long/hedging answers are a mild warning sign
+3D , Semantic entropy: the strongest clue , do the 5 sampled answers actually mean the same thing (checked using an AI that judges logical agreement, not just wording)? For math questions, this is swapped for a simpler rule: did they land on the same final number
+3E , Agreement ratio: a cheaper backup to 3D , how many of the 5 answers match the most common one
+3F , Hidden-state signal: peeking at the model's internal "thinking" across the 5 attempts, to catch shakiness that never shows up in the actual words
+3G , Attention entropy: a minor, optional clue about whether the model was focused or scattered while answering
+Step 4 , Self-Verification
+The model is shown the question, its own greedy answer, and its other 4 sampled answers, then asked: "Is this correct? Give a probability." Showing it its own other attempts first (rather than judging in isolation) makes this self-check meaningfully more reliable. This produces a new clue, p_true.
+Caveat: a model that doesn't know something well is often also bad at judging that it doesn't know it , so this clue is trusted as one input among many, not as the final word.
+Step 5 , (folded into Step 3D)
+There's no separate Step 5 , v1's "semantic agreement" and 3D's "self-consistency" were the same computation under two names, so they were merged into 3D.
+Step 6 , Retrieval Verification
+For factual questions only, search an outside source (Wikipedia) and check whether retrieved passages actually back up the model's specific claim, producing evidence_score. This is the only step that checks something outside the model entirely , it's the one clue that can catch a model being consistently and confidently wrong in the same way every time, which none of the internal clues (3A–3F, Step 4) can detect on their own. Skipped for math questions, where there's nothing relevant to look up.
+Step 7 , Query-Type Classifier
+A small classifier reads just the question text and labels it: factual_qa, math_reasoning, commonsense (or code). This label acts like a traffic controller:
+It decides which version of 3D's matching rule to use
+It decides whether Step 6 runs at all
+It also gets added into the final report card as its own clue
+This lets the system make routing decisions automatically on brand-new questions, rather than relying on you knowing which benchmark a question came from.
+Step 8 , Feature Vector
+All the independently-computed clues from Steps 3, 4, 6, and 7 get bundled into one consistent package per question:
+[ 3A, 3B, 3C, 3D, 3E, 3F, 3G, p_true, evidence_score, query_type, temperature, top_p ]
+Missing values (like evidence_score for math questions) are left blank rather than faked with a zero , the calibration model is capable of learning to ignore genuinely missing information rather than being misled by it.
+Step 9 , Calibration Models
+9a , Fixed-weight baseline: train a model (XGBoost) on thousands of (feature vector → correct/incorrect) examples. It learns which combinations of clues tend to predict correctness , e.g., "low semantic entropy + high self-verification + strong evidence → almost always right," or "confident tone but disagreeing samples → often a smooth wrong answer." Applies the same learned logic to every question.
+9b , Adaptive/gated model (the actual contribution): using query_type from Step 7, this version adjusts how much it trusts each clue depending on the kind of question , leaning hard on 3D/3E and ignoring evidence_score for math, leaning on evidence_score for factual questions. Either as separate specialist models per type, or one combined model with a learned "gate" that reweights the clues per type.
+Output either way: a single number, P(correct), e.g. 0.73.
+Step 10 , Explain Confidence
+Since the model knows which clues drove the score up or down for this specific question, it surfaces the most influential ones as plain-language reasons:
+Confidence: 71%
+Reason:
+  • High predictive entropy
+  • 5 sampled answers disagreed with each other
+  • Self-verification disagreed with the original answer
+  • Retrieval evidence was weak (or: not applicable, math question)
+  • Routed as "math_reasoning" , semantic entropy weighted much higher than evidence_score
+Evaluation
+Test whether the whole system actually works, using standard metrics:
+ECE , the headline metric: when the system says "70% confident," is it actually right about 70% of the time?
+MCE , worst-case version of ECE, catches localized miscalibration ECE's average might hide
+Brier Score / NLL , reward being confident and correct, penalize confident-and-wrong
+AUROC , can the score at least rank correct answers above incorrect ones, separate from whether the exact numbers are calibrated
+Reliability diagram , visual version of ECE
+Plus two important additions:
+Per-query-type breakdown , the adaptive model (9b) needs to beat the baseline (9a) within each question type individually, not just on average, or the "adaptive helps" claim is weak
+SelfCheckGPT as a baseline , the standard black-box comparison (samples only, no internal access) your full system should clearly outperform
+
+Family | Mechanism | Core limitation
+Verbalizing methods | The model is directly asked to report its own confidence alongside its answer | Verbalized confidence is frequently miscalibrated, models tend toward overconfidence precisely on questions where their underlying knowledge is weakest, since self-assessment inherits the same knowledge gaps that produced the original error
+Latent information methods | Confidence is inferred from internal signals, token probabilities, entropy, hidden states, perplexity , without asking the model anything | Captures the model's internal uncertainty but not whether that internal state actually corresponds to truth; a model can be internally coherent and confidently wrong
+Consistency-based methods | The same question is asked multiple times; agreement across responses implies confidence, disagreement implies uncertainty | Cannot detect a model that is consistently wrong , if the model makes the same mistake every time, this family reports high confidence incorrectly
+Semantic clustering methods | Multiple responses are grouped by meaning rather than exact text match, and confidence is derived from the resulting cluster structure | Strongest of the four individually, but still only evaluates the final answer as a single unit , it cannot indicate where within a multi-step response the uncertainty originates

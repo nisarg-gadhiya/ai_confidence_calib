@@ -46,6 +46,7 @@ class FactStepResult(BaseModel):
 
 class FactualPipelineResult(BaseModel):
     question: str
+    final_answer: str | None = None
     steps: list[FactStepResult]
     predicted_error_step: int | None = None
     answer_confidence: float | None = None

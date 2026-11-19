@@ -1,0 +1,11 @@
+flowchart LR
+    R["fyp/"] --> FE["frontend/<br/>React app"]
+    R --> BE["backend/app/<br/>FastAPI routes, services, schemas"]
+    R --> GW["gateway/<br/>classifier, router, prompts"]
+    R --> AR["arithmetic/<br/>generation, signals, fusion,<br/>evaluation, data, experiments"]
+    R --> FA["factual/<br/>generation, decomposition, retrieval,<br/>verification, signals, calibration"]
+    R --> LO["logical/<br/>premises, rules (extractor, engine, Z3 solver),<br/>decomposition, signals, verification"]
+    R --> TS["tests/<br/>arithmetic, backend, factual,<br/>gateway, logical"]
+    R --> DT["backend/data/<br/>calibration_runs.json"]
+    R --> NB["notebooks/<br/>GSM8K exploration, signals, evaluation"]
+    R --> RP["report/<br/>sources of this report"]

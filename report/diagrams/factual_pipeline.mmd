@@ -1,0 +1,13 @@
+flowchart TD
+    Q["Question"] --> G["Generate answer + factual steps<br/>(FACTUAL_REASONING_PROMPT)"]
+    G --> D["Decompose steps → atomic claims<br/>(+ final-answer step)"]
+    D --> CL{"For each claim"}
+    CL --> W["Web search (gpt-4.1-mini, web_search tool)<br/>up to 5 cited sources"]
+    W --> PF["Fetch page text when snippet<br/>relevance < 0.2"]
+    PF --> R["Source reliability (22-tier policy)<br/>KEEP / DOWN_WEIGHT / REJECT"]
+    R --> EV["Evidence retrieval<br/>drop REJECT, keep relevance ≥ 0.2"]
+    EV --> AS["LLM assessment per source<br/>SUPPORT / CONTRADICT / UNKNOWN,<br/>confidence, essential"]
+    AS --> SIG["Signals: self-verification,<br/>verdict consistency, evidence score"]
+    SIG --> FU["Fuse 0.4 / 0.3 / 0.3 → σ(−1 + 3.2f)"]
+    FU --> CL
+    CL -- done --> AGG["Step probability = min over its claims<br/>Flagged step = argmin<br/>Answer confidence = geometric mean of essential claims"]

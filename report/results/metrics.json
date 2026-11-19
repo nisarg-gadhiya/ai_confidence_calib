@@ -1,0 +1,1018 @@
+{
+  "generated_by": "report/scripts/compute_metrics.py",
+  "sources": {
+    "logical": "logical\\experiments\\results\\logical_pilot.json",
+    "factual": "factual\\experiments\\results\\factual_test.json",
+    "arithmetic": "arithmetic\\experiments\\results\\gsm8k_pilot_5.json",
+    "runs": "backend\\data\\calibration_runs.json"
+  },
+  "arithmetic": {
+    "dataset": "openai/gsm8k",
+    "split": "test",
+    "questions_selected": 5,
+    "questions_completed": 5,
+    "consistency_samples_per_step": 5,
+    "calibration": {
+      "n": 5,
+      "positives": 5,
+      "negatives": 0,
+      "accuracy": 1.0,
+      "mean_confidence": 0.6188691030063621,
+      "mean_conf_correct": 0.6188691030063621,
+      "mean_conf_wrong": null,
+      "ece_10bin": 0.3811308969936379,
+      "mce_10bin": 0.401446188430056,
+      "brier": 0.1455013582612114,
+      "nll": 0.480174077117861,
+      "reliability_bins": [
+        {
+          "count": 1,
+          "mean_confidence": 0.598553811569944,
+          "accuracy": 1.0
+        },
+        {
+          "count": 4,
+          "mean_confidence": 0.6239479258654667,
+          "accuracy": 1.0
+        }
+      ],
+      "auroc": null,
+      "auroc_note": "undefined: only one correctness class present"
+    },
+    "steps_per_question": {
+      "n": 5,
+      "mean": 6.4,
+      "std": 3.4985711369071804,
+      "min": 3.0,
+      "median": 6.0,
+      "max": 13.0
+    },
+    "step_types": {
+      "arithmetic": 22,
+      "factual_recall": 4,
+      "conclusion": 1,
+      "logical_inference": 2,
+      "setup": 3
+    },
+    "fused_confidence_by_step_type": {
+      "arithmetic": {
+        "n": 22,
+        "mean": 0.7833351250503486,
+        "std": 0.1370234940699424,
+        "min": 0.598553811569944,
+        "median": 0.7642321198010957,
+        "max": 0.999970323676287
+      },
+      "factual_recall": {
+        "n": 4,
+        "mean": 0.845932149808985,
+        "std": 0.07184424161812238,
+        "min": 0.7501759032394615,
+        "median": 0.8585797836568994,
+        "max": 0.91639312868268
+      },
+      "conclusion": {
+        "n": 1,
+        "mean": 0.7844825379739888,
+        "std": 0.0,
+        "min": 0.7844825379739888,
+        "median": 0.7844825379739888,
+        "max": 0.7844825379739888
+      },
+      "logical_inference": {
+        "n": 2,
+        "mean": 0.7936943799035859,
+        "std": 0.07340368639453032,
+        "min": 0.7202906935090556,
+        "median": 0.7936943799035859,
+        "max": 0.8670980662981163
+      },
+      "setup": {
+        "n": 3,
+        "mean": 0.7018990830211694,
+        "std": 0.020974201687996935,
+        "min": 0.6722787349002788,
+        "median": 0.7153483979518377,
+        "max": 0.7180701162113918
+      }
+    },
+    "consistency_method": {
+      "model_semantic_clusters": 30,
+      "exact_match_fallback": 2
+    },
+    "signals_step_level": {
+      "verification": {
+        "n": 32,
+        "mean": 0.984375,
+        "std": 0.03630921887069453,
+        "min": 0.9,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "consistency": {
+        "n": 32,
+        "mean": 0.525,
+        "std": 0.30310889132455354,
+        "min": 0.2,
+        "median": 0.4,
+        "max": 1.0
+      },
+      "sample_agreement": {
+        "n": 32,
+        "mean": 0.35625,
+        "std": 0.2105610065990377,
+        "min": 0.2,
+        "median": 0.30000000000000004,
+        "max": 1.0
+      },
+      "semantic_entropy": {
+        "n": 30,
+        "mean": 0.6272562153012492,
+        "std": 0.3655040500057136,
+        "min": -0.0,
+        "median": 0.7415940651559643,
+        "max": 1.0000000000000002
+      },
+      "token_prob": {
+        "n": 32,
+        "mean": 0.8265617729635537,
+        "std": 0.07159623482897111,
+        "min": 0.6830242478985549,
+        "median": 0.8217650982256084,
+        "max": 0.9998812947051481
+      },
+      "token_entropy": {
+        "n": 32,
+        "mean": 0.1441443355866627,
+        "std": 0.05816977127166539,
+        "min": 0.0005972917523149176,
+        "median": 0.1416824045802747,
+        "max": 0.25534883981158674
+      },
+      "fused": {
+        "n": 32,
+        "mean": 0.7842084342871336,
+        "std": 0.12267367085868638,
+        "min": 0.598553811569944,
+        "median": 0.7650441275940789,
+        "max": 0.999970323676287
+      }
+    },
+    "signal_correlations_step_level": {
+      "verification~consistency": 0.12067668449998867,
+      "consistency~semantic_entropy": -0.9912358463749317,
+      "token_prob~token_entropy": -0.92254751169281,
+      "consistency~sample_agreement": 0.5165660467797571,
+      "fused~consistency": 0.942649157717251
+    },
+    "flagged_step_relative_position": {
+      "n": 5,
+      "mean": 0.5833333333333333,
+      "std": 0.29814239699997197,
+      "min": 0.16666666666666666,
+      "median": 0.6666666666666666,
+      "max": 1.0
+    }
+  },
+  "factual": {
+    "instruction_like_claims": {
+      "pattern": "^(identify|recall|determine|find|verify|check|confirm|look up|research|consider|search)\\b",
+      "claims": 83,
+      "of_claims": 118,
+      "questions_with_any": 40,
+      "verdicts": {
+        "SUPPORT": 47,
+        "CONTRADICT": 3,
+        "UNKNOWN": 33
+      }
+    },
+    "dataset": "mandarjoshi/trivia_qa",
+    "config": "rc.nocontext",
+    "split": "validation",
+    "selection": "First 100 rows from a streamed validation split.",
+    "questions_selected": 100,
+    "questions_completed": 40,
+    "correctness_label": "lenient proxy: a normalised TriviaQA alias occurs in the generated reasoning text (the run did not store a separate final answer)",
+    "calibration": {
+      "n": 40,
+      "positives": 28,
+      "negatives": 12,
+      "accuracy": 0.7,
+      "mean_confidence": 0.6756102689964578,
+      "mean_conf_correct": 0.667700682456371,
+      "mean_conf_wrong": 0.6940659709233269,
+      "ece_10bin": 0.23803899321258137,
+      "mce_10bin": 0.6015199767916568,
+      "brier": 0.260967258461368,
+      "nll": 0.7241000639545533,
+      "reliability_bins": [
+        {
+          "count": 4,
+          "mean_confidence": 0.2689414213699951,
+          "accuracy": 0.75
+        },
+        {
+          "count": 1,
+          "mean_confidence": 0.39848002320834314,
+          "accuracy": 1.0
+        },
+        {
+          "count": 6,
+          "mean_confidence": 0.4857492716215676,
+          "accuracy": 0.8333333333333334
+        },
+        {
+          "count": 3,
+          "mean_confidence": 0.573220556639296,
+          "accuracy": 0.6666666666666666
+        },
+        {
+          "count": 4,
+          "mean_confidence": 0.6607556268354774,
+          "accuracy": 0.75
+        },
+        {
+          "count": 5,
+          "mean_confidence": 0.7561795790935468,
+          "accuracy": 0.4
+        },
+        {
+          "count": 17,
+          "mean_confidence": 0.8524757263948852,
+          "accuracy": 0.7058823529411765
+        }
+      ],
+      "auroc": 0.5163690476190477
+    },
+    "answer_confidence_status": {
+      "ok": 40
+    },
+    "steps_per_answer": {
+      "n": 40,
+      "mean": 2.9,
+      "std": 0.6244997998398398,
+      "min": 2.0,
+      "median": 3.0,
+      "max": 5.0
+    },
+    "claims_per_answer": {
+      "n": 40,
+      "mean": 2.95,
+      "std": 0.7399324293474371,
+      "min": 2.0,
+      "median": 3.0,
+      "max": 6.0
+    },
+    "claims_total": 118,
+    "sources_per_claim": {
+      "n": 118,
+      "mean": 1.3559322033898304,
+      "std": 0.906898455706559,
+      "min": 0.0,
+      "median": 1.5,
+      "max": 3.0
+    },
+    "claim_verdicts": {
+      "SUPPORT": 70,
+      "CONTRADICT": 3,
+      "UNKNOWN": 45
+    },
+    "source_status_recorded": {
+      "DOWN_WEIGHT": 144,
+      "KEEP": 16
+    },
+    "source_status_under_current_policy": {
+      "DOWN_WEIGHT": 125,
+      "KEEP": 35
+    },
+    "source_tiers_under_current_policy": {
+      "general": 84,
+      "general_org": 40,
+      "reference": 15,
+      "government": 13,
+      "reputable_news": 3,
+      "academic": 2,
+      "intergovernmental": 2,
+      "news": 1
+    },
+    "reliability_recorded": {
+      "n": 160,
+      "mean": 0.5634375,
+      "std": 0.13036509729889362,
+      "min": 0.52,
+      "median": 0.52,
+      "max": 0.96
+    },
+    "reliability_current_policy": {
+      "n": 160,
+      "mean": 0.6169375,
+      "std": 0.16468529410287366,
+      "min": 0.52,
+      "median": 0.52,
+      "max": 0.97
+    },
+    "text_origin": {
+      "fetched_webpage_content": 145,
+      "citation_linked_model_summary": 15
+    },
+    "unique_domains": 73,
+    "top_domains": [
+      [
+        "encyclopedia.com",
+        12
+      ],
+      [
+        "legalclarity.org",
+        9
+      ],
+      [
+        "newikis.com",
+        6
+      ],
+      [
+        "villagepreservation.org",
+        6
+      ],
+      [
+        "music.apple.com",
+        6
+      ],
+      [
+        "knowanimals.com",
+        4
+      ],
+      [
+        "x.xlrd.org",
+        4
+      ],
+      [
+        "gov.uk",
+        4
+      ],
+      [
+        "owiki.org",
+        4
+      ],
+      [
+        "olympedia.org",
+        4
+      ],
+      [
+        "bible.com",
+        4
+      ],
+      [
+        "zitadelle-berlin.de",
+        4
+      ],
+      [
+        "quizzclub.com",
+        3
+      ],
+      [
+        "music.wikisort.org",
+        3
+      ],
+      [
+        "si.com",
+        3
+      ]
+    ],
+    "signals_claim_level": {
+      "self_verification": {
+        "n": 118,
+        "mean": 0.5919491525423728,
+        "std": 0.38339309931319415,
+        "min": 0.0,
+        "median": 0.8,
+        "max": 1.0
+      },
+      "consistency": {
+        "n": 118,
+        "mean": 0.7048022598870057,
+        "std": 0.413069795330162,
+        "min": 0.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "evidence": {
+        "n": 118,
+        "mean": 0.6051349428547235,
+        "std": 0.4216536759421201,
+        "min": 0.0,
+        "median": 0.77633433260191,
+        "max": 1.0
+      },
+      "calibrated": {
+        "n": 118,
+        "mean": 0.6927904779359704,
+        "std": 0.24238996189921455,
+        "min": 0.2689414213699951,
+        "median": 0.7875394176696722,
+        "max": 0.9002495108803148
+      }
+    },
+    "signal_correlation_with_answer_correctness": {
+      "self_verification": -0.028485729607573843,
+      "consistency": -0.16608035661368406,
+      "evidence": -0.031873549100177,
+      "calibrated": -0.10306373015537602
+    }
+  },
+  "logical": {
+    "dataset": "tasksource/ruletaker",
+    "split": "test",
+    "selection": "First 100 rows whose claim can be converted to a supported yes/no query.",
+    "questions_selected": 100,
+    "questions_completed": 44,
+    "consistency_samples_per_step": 5,
+    "accuracy_pilot": {
+      "correct": 29,
+      "n": 44,
+      "rate": 0.6590909090909091
+    },
+    "accuracy_after_parser_fix_offline": {
+      "correct": 33,
+      "n": 44,
+      "rate": 0.75
+    },
+    "confusion_pilot": {
+      "entailment": {
+        "ENTAILED": 8,
+        "CONTRADICTED": 0,
+        "UNKNOWN": 15
+      },
+      "not entailment": {
+        "ENTAILED": 0,
+        "CONTRADICTED": 8,
+        "UNKNOWN": 13
+      }
+    },
+    "confusion_after_fix": {
+      "entailment": {
+        "ENTAILED": 12,
+        "CONTRADICTED": 0,
+        "UNKNOWN": 11
+      },
+      "not entailment": {
+        "ENTAILED": 0,
+        "CONTRADICTED": 11,
+        "UNKNOWN": 10
+      }
+    },
+    "calibration_pilot": {
+      "n": 44,
+      "positives": 29,
+      "negatives": 15,
+      "accuracy": 0.6590909090909091,
+      "mean_confidence": 0.47101234555079985,
+      "mean_conf_correct": 0.47742274239702237,
+      "mean_conf_wrong": 0.45861891164810287,
+      "ece_10bin": 0.28242508689814627,
+      "mce_10bin": 0.5099986668799654,
+      "brier": 0.2837950229435586,
+      "nll": 0.7614999262500803,
+      "reliability_bins": [
+        {
+          "count": 24,
+          "mean_confidence": 0.32840225521689964,
+          "accuracy": 0.625
+        },
+        {
+          "count": 3,
+          "mean_confidence": 0.4900013331200346,
+          "accuracy": 1.0
+        },
+        {
+          "count": 7,
+          "mean_confidence": 0.5603572990579081,
+          "accuracy": 0.7142857142857143
+        },
+        {
+          "count": 4,
+          "mean_confidence": 0.6339579171374712,
+          "accuracy": 0.25
+        },
+        {
+          "count": 2,
+          "mean_confidence": 0.7698959226634648,
+          "accuracy": 0.5
+        },
+        {
+          "count": 3,
+          "mean_confidence": 0.8248369871690034,
+          "accuracy": 1.0
+        },
+        {
+          "count": 1,
+          "mean_confidence": 0.9002495108803148,
+          "accuracy": 1.0
+        }
+      ],
+      "auroc": 0.4298850574712644
+    },
+    "confidence_by_pilot_verdict": {
+      "ENTAILED": {
+        "n": 8,
+        "mean": 0.7378878654190172,
+        "std": 0.12943665691974335,
+        "min": 0.5379270059740934,
+        "median": 0.7857202893639343,
+        "max": 0.9002495108803148
+      },
+      "CONTRADICTED": {
+        "n": 8,
+        "mean": 0.3992489850201951,
+        "std": 0.10254498485781254,
+        "min": 0.3083168472451772,
+        "median": 0.3519384149129073,
+        "max": 0.5851618423601455
+      },
+      "UNKNOWN": {
+        "n": 28,
+        "mean": 0.41526601431148186,
+        "std": 0.13360861100793353,
+        "min": 0.3083168472451772,
+        "median": 0.3362613025956473,
+        "max": 0.7755640142690734
+      }
+    },
+    "calibration_within_unknown_answers": {
+      "n": 28,
+      "positives": 13,
+      "negatives": 15,
+      "accuracy": 0.4642857142857143,
+      "mean_confidence": 0.41526601431148186,
+      "mean_conf_correct": 0.3652434404615346,
+      "mean_conf_wrong": 0.45861891164810287,
+      "ece_10bin": 0.25506400811403335,
+      "mce_10bin": 0.7755640142690734,
+      "brier": 0.3154282145776167,
+      "nll": 0.8336710298484984,
+      "reliability_bins": [
+        {
+          "count": 19,
+          "mean_confidence": 0.3290961449286445,
+          "accuracy": 0.5263157894736842
+        },
+        {
+          "count": 1,
+          "mean_confidence": 0.4900013331200346,
+          "accuracy": 1.0
+        },
+        {
+          "count": 4,
+          "mean_confidence": 0.5653713097742561,
+          "accuracy": 0.5
+        },
+        {
+          "count": 3,
+          "mean_confidence": 0.6158570201970384,
+          "accuracy": 0.0
+        },
+        {
+          "count": 1,
+          "mean_confidence": 0.7755640142690734,
+          "accuracy": 0.0
+        }
+      ],
+      "auroc": 0.2153846153846154
+    },
+    "correct_by_pilot_verdict": {
+      "ENTAILED": {
+        "correct": 8,
+        "n": 8
+      },
+      "CONTRADICTED": {
+        "correct": 8,
+        "n": 8
+      },
+      "UNKNOWN": {
+        "correct": 13,
+        "n": 28
+      }
+    },
+    "signals_essential_claim": {
+      "self_verification": {
+        "n": 44,
+        "mean": 0.3227272727272727,
+        "std": 0.40668484356251966,
+        "min": 0.0,
+        "median": 0.1,
+        "max": 1.0
+      },
+      "consistency": {
+        "n": 44,
+        "mean": 0.3318181818181818,
+        "std": 0.2728408854265258,
+        "min": 0.2,
+        "median": 0.2,
+        "max": 1.0
+      },
+      "logical_validity": {
+        "n": 44,
+        "mean": 0.18181818181818182,
+        "std": 0.38569460791993504,
+        "min": 0.0,
+        "median": 0.0,
+        "max": 1.0
+      },
+      "semantic_entropy": {
+        "n": 42,
+        "mean": 0.8467955830314222,
+        "std": 0.3223245098027029,
+        "min": -0.0,
+        "median": 1.0000000000000002,
+        "max": 1.0000000000000002
+      }
+    },
+    "signal_correlation_with_correctness": {
+      "self_verification": -0.2073889765591901,
+      "consistency": 0.1365901402167561,
+      "logical_validity": 0.3390317518104051
+    },
+    "proof_length_pilot": {
+      "1": 38,
+      "2": 6
+    },
+    "proof_length_after_fix": {
+      "1": 40,
+      "2": 4
+    },
+    "inconsistency_detections": 0,
+    "remaining_misses_after_fix": [
+      {
+        "question_id": "ruletaker-test-000004",
+        "question": "Is Erin not big?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000016",
+        "question": "Is Bob not quiet?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000018",
+        "question": "Is Harry not kind?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000019",
+        "question": "Is Bob not red?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000079",
+        "question": "Is Anne not white?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000081",
+        "question": "Is Bob not nice?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000091",
+        "question": "Is Anne green?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": false
+      },
+      {
+        "question_id": "ruletaker-test-000094",
+        "question": "Is Dave not red?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000098",
+        "question": "Is Dave nice?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": false
+      },
+      {
+        "question_id": "ruletaker-test-000100",
+        "question": "Is Dave not kind?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      },
+      {
+        "question_id": "ruletaker-test-000106",
+        "question": "Is Gary not white?",
+        "gold": "entailment",
+        "verdict_after_fix": "UNKNOWN",
+        "negated_query": true
+      }
+    ],
+    "remaining_misses_negated_query": 9,
+    "remaining_misses_note": "All misses after the fix require the closed-world assumption: negated queries are unprovable under open-world semantics, and the two positive queries depend on rules with negated conditions (e.g. \"If something is not young then it is green\"). Verified manually."
+  },
+  "stored_runs": {
+    "runs": 29,
+    "by_category": {
+      "arithmetic": 4,
+      "factual": 17,
+      "logical": 8
+    },
+    "first": "2026-11-19T15:28:24.542732+00:00",
+    "last": "2026-11-19T17:24:05.044939+00:00",
+    "with_pipeline_output": 23,
+    "calibration_status": {
+      "type_adaptive_weighted_proxy": 4,
+      "fixed_sigmoid_not_empirically_calibrated": 25
+    },
+    "confidence_by_category": {
+      "arithmetic": {
+        "n": 4,
+        "mean": 0.6584462400363821,
+        "std": 0.04286302535411118,
+        "min": 0.6234031451929947,
+        "median": 0.6402122811831314,
+        "max": 0.7299572525862709
+      },
+      "factual": {
+        "n": 17,
+        "mean": 0.8239112766717676,
+        "std": 0.15086894691898012,
+        "min": 0.2689414213699951,
+        "median": 0.8881517921022618,
+        "max": 0.9002495108803148
+      },
+      "logical": {
+        "n": 8,
+        "mean": 0.5810950649963589,
+        "std": 0.17645312741523214,
+        "min": 0.3083168472451772,
+        "median": 0.6006082195512745,
+        "max": 0.8816344711799424
+      }
+    },
+    "steps_by_category": {
+      "arithmetic": {
+        "n": 4,
+        "mean": 4.75,
+        "std": 0.82915619758885,
+        "min": 4.0,
+        "median": 4.5,
+        "max": 6.0
+      },
+      "factual": {
+        "n": 17,
+        "mean": 3.764705882352941,
+        "std": 1.799653945973924,
+        "min": 2.0,
+        "median": 3.0,
+        "max": 8.0
+      },
+      "logical": {
+        "n": 8,
+        "mean": 1.25,
+        "std": 0.6614378277661477,
+        "min": 1.0,
+        "median": 1.0,
+        "max": 3.0
+      }
+    },
+    "verdicts": {
+      "SUPPORT": 55,
+      "UNKNOWN": 11,
+      "CONTRADICT": 1,
+      "ENTAILED": 6,
+      "CONTRADICTED": 1
+    }
+  },
+  "cross_pipeline": {
+    "step_signal_correlation": {
+      "self_verification": {
+        "self_verification": 1.0,
+        "consistency": 0.46734893503761366,
+        "domain_evidence": 0.8324200380150528,
+        "calibrated": 0.8994730967529221
+      },
+      "consistency": {
+        "self_verification": 0.46734893503761366,
+        "consistency": 1.0,
+        "domain_evidence": 0.541154611232036,
+        "calibrated": 0.7605619148054542
+      },
+      "domain_evidence": {
+        "self_verification": 0.8324200380150528,
+        "consistency": 0.541154611232036,
+        "domain_evidence": 1.0000000000000002,
+        "calibrated": 0.8968297843775902
+      },
+      "calibrated": {
+        "self_verification": 0.8994730967529221,
+        "consistency": 0.7605619148054542,
+        "domain_evidence": 0.8968297843775902,
+        "calibrated": 1.0
+      }
+    },
+    "confidence_by_step_position": {
+      "arithmetic": {
+        "1": {
+          "n": 5,
+          "mean": 0.6968326825164297,
+          "std": 0.05992949957918933,
+          "min": 0.598553811569944,
+          "median": 0.7153483979518377,
+          "max": 0.7799123519486962
+        },
+        "2": {
+          "n": 5,
+          "mean": 0.7288028263627073,
+          "std": 0.0801514100761949,
+          "min": 0.626494828913593,
+          "median": 0.7501759032394615,
+          "max": 0.8207435992863794
+        },
+        "3": {
+          "n": 5,
+          "mean": 0.7503924121002062,
+          "std": 0.1275660950897981,
+          "min": 0.6175115287721356,
+          "median": 0.7485518876534952,
+          "max": 0.9607624873373661
+        },
+        "4": {
+          "n": 4,
+          "mean": 0.8384512860587627,
+          "std": 0.11040090268419936,
+          "min": 0.7199432553839408,
+          "median": 0.8278028112178997,
+          "max": 0.978256266415311
+        },
+        "5": {
+          "n": 3,
+          "mean": 0.8680024751159179,
+          "std": 0.11052402725786853,
+          "min": 0.7202906935090556,
+          "median": 0.8975948020903707,
+          "max": 0.9861219297483276
+        },
+        "6": {
+          "n": 3,
+          "mean": 0.9594371317582134,
+          "std": 0.03416640660308672,
+          "min": 0.91639312868268,
+          "median": 0.9619479429156731,
+          "max": 0.999970323676287
+        },
+        "7": {
+          "n": 1,
+          "mean": 0.660673018288017,
+          "std": 0.0,
+          "min": 0.660673018288017,
+          "median": 0.660673018288017,
+          "max": 0.660673018288017
+        },
+        "8": {
+          "n": 1,
+          "mean": 0.8174201689909075,
+          "std": 0.0,
+          "min": 0.8174201689909075,
+          "median": 0.8174201689909075,
+          "max": 0.8174201689909075
+        },
+        "9": {
+          "n": 1,
+          "mean": 0.9207560619746387,
+          "std": 0.0,
+          "min": 0.9207560619746387,
+          "median": 0.9207560619746387,
+          "max": 0.9207560619746387
+        },
+        "10": {
+          "n": 1,
+          "mean": 0.7198548625088683,
+          "std": 0.0,
+          "min": 0.7198548625088683,
+          "median": 0.7198548625088683,
+          "max": 0.7198548625088683
+        },
+        "11": {
+          "n": 1,
+          "mean": 0.7844825379739888,
+          "std": 0.0,
+          "min": 0.7844825379739888,
+          "median": 0.7844825379739888,
+          "max": 0.7844825379739888
+        },
+        "12": {
+          "n": 1,
+          "mean": 0.8670980662981163,
+          "std": 0.0,
+          "min": 0.8670980662981163,
+          "median": 0.8670980662981163,
+          "max": 0.8670980662981163
+        },
+        "13": {
+          "n": 1,
+          "mean": 0.6081216113995789,
+          "std": 0.0,
+          "min": 0.6081216113995789,
+          "median": 0.6081216113995789,
+          "max": 0.6081216113995789
+        }
+      },
+      "factual": {
+        "1": {
+          "n": 40,
+          "mean": 0.6739585872663788,
+          "std": 0.24684049953949097,
+          "min": 0.2689414213699951,
+          "median": 0.7772028234316377,
+          "max": 0.9002495108803148
+        },
+        "2": {
+          "n": 40,
+          "mean": 0.6688101916354636,
+          "std": 0.24709845720602766,
+          "min": 0.2689414213699951,
+          "median": 0.7666351130169171,
+          "max": 0.9002495108803148
+        },
+        "3": {
+          "n": 32,
+          "mean": 0.7540303792329629,
+          "std": 0.210811366622903,
+          "min": 0.2689414213699951,
+          "median": 0.8881517921022618,
+          "max": 0.9002495108803148
+        },
+        "4": {
+          "n": 5,
+          "mean": 0.7281223367091996,
+          "std": 0.24004687637733435,
+          "min": 0.2689414213699951,
+          "median": 0.8881517921022618,
+          "max": 0.8881517921022618
+        },
+        "5": {
+          "n": 1,
+          "mean": 0.2689414213699951,
+          "std": 0.0,
+          "min": 0.2689414213699951,
+          "median": 0.2689414213699951,
+          "max": 0.2689414213699951
+        }
+      },
+      "logical": {
+        "1": {
+          "n": 44,
+          "mean": 0.5274260048108568,
+          "std": 0.2055868551097875,
+          "min": 0.3083168472451772,
+          "median": 0.49800052256831123,
+          "max": 0.9002495108803148
+        },
+        "2": {
+          "n": 6,
+          "mean": 0.39103730908100215,
+          "std": 0.0901050004603311,
+          "min": 0.3083168472451772,
+          "median": 0.3508309104507652,
+          "max": 0.5379270059740934
+        }
+      }
+    }
+  },
+  "error_localisation": {
+    "measured": false,
+    "reason": "No run records a ground-truth error step: GSM8K pilot answers were all correct, the error-injection utility (arithmetic/data/error_injection.py) has not been executed against the pipeline, and RuleTaker/TriviaQA provide answer-level labels only."
+  },
+  "runtime_and_llm_calls": {
+    "measured": false,
+    "reason": "The pilot scripts do not log wall-clock time or call counts per question."
+  },
+  "tests": {
+    "summary": "105 passed, 1 warning in 11.00s",
+    "exit_code": 0,
+    "wall_seconds": 13.76161640000646,
+    "per_file": {
+      "tests/arithmetic/test_research_evaluation.py": 7,
+      "tests/backend/test_import.py": 1,
+      "tests/backend/test_inference_pipeline.py": 2,
+      "tests/backend/test_llm_service.py": 12,
+      "tests/factual/test_factual_pipeline.py": 37,
+      "tests/gateway/test_gateway.py": 16,
+      "tests/logical/test_logical_pipeline.py": 30
+    },
+    "total": 105
+  }
+}

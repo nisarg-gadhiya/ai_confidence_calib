@@ -5,7 +5,18 @@ from dataclasses import dataclass
 
 
 ARTICLES = {"a", "an", "the"}
-VARIABLE_SUBJECTS = {"someone", "somebody", "anyone", "anybody", "they", "he", "she"}
+VARIABLE_SUBJECTS = {
+    "someone", "somebody", "something", "anyone", "anybody", "anything",
+    "everyone", "everybody", "everything", "they", "he", "she",
+}
+# Pronouns that refer back to a rule's variable ("If something is cold then
+# it is furry"). Only bound inside a rule whose antecedent has a variable, so
+# a plain fact like "It is raining" keeps its literal subject.
+RULE_PRONOUNS = {"it", "them", "him", "her"}
+# Head nouns of generic plurals: "All furry things are round",
+# "Red people are big". The qualifiers in front become the conditions.
+GENERIC_HEADS = r"(?:things?|people|persons?|ones?|individuals?|objects?)"
+_COPULA = r"\b(?:is|are|was|were|has|have|does|do|becomes?)\b"
 RELATIONS = {
     "taller than": "taller_than",
     "shorter than": "shorter_than",
@@ -208,28 +219,89 @@ def _normalize_subject(text: str) -> str:
     return subject
 
 
+def _split_list(text: str) -> list[str]:
+    """Split "kind, young and big" into its items."""
+    return [item.strip() for item in re.split(r"\s*,\s*(?:and\s+)?|\s+and\s+", text, flags=re.IGNORECASE) if item.strip()]
+
+
+def _match_universal(text: str) -> tuple[str, str] | None:
+    """Return (qualifiers, predicate) for universal / generic-plural premises.
+
+    Handles "All cats are animals", "All furry things are round",
+    "Red things are big" and "Kind, young people are nice".
+    """
+    generic = re.match(
+        rf"^(?:all\s+)?(.+?)\s+{GENERIC_HEADS}\s+are\s+(.+)$",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if generic:
+        return generic.group(1), generic.group(2)
+    universal = re.match(r"^all\s+(.+?)\s+are\s+(.+)$", text, flags=re.IGNORECASE)
+    if universal:
+        return universal.group(1), universal.group(2)
+    return None
+
+
+def _parse_conjuncts(text: str) -> tuple[Atom, ...]:
+    """Parse "something is green and cold" as two atoms sharing a subject."""
+    atoms: list[Atom] = []
+    subject_text: str | None = None
+    for clause in _split_list(text):
+        has_copula = re.search(_COPULA, clause, flags=re.IGNORECASE)
+        if has_copula:
+            subject_match = re.match(rf"^(.+?)\s+{_COPULA}", clause, flags=re.IGNORECASE)
+            subject_text = subject_match.group(1) if subject_match else subject_text
+        elif subject_text is not None:
+            clause = f"{subject_text} is {clause}"
+        atom = parse_atom(clause)
+        if atom is not None:
+            atoms.append(atom)
+    return tuple(atoms)
+
+
+def _bind_rule_pronouns(
+    antecedents: tuple[Atom, ...],
+    consequents: tuple[Atom, ...],
+) -> tuple[tuple[Atom, ...], tuple[Atom, ...]]:
+    if not any(atom.subject == "$x" for atom in antecedents):
+        return antecedents, consequents
+
+    def bind(atom: Atom) -> Atom:
+        if atom.subject in RULE_PRONOUNS:
+            return Atom("$x", atom.predicate, atom.object, atom.negated)
+        return atom
+
+    return tuple(map(bind, antecedents)), tuple(map(bind, consequents))
+
+
 def extract_rules(premises: list[dict[str, str]]) -> list[Rule]:
     rules: list[Rule] = []
     for premise in premises:
         text = premise["text"].strip().rstrip(".")
-        universal = re.match(r"^all\s+(.+?)\s+are\s+(.+)$", text, flags=re.IGNORECASE)
+        universal = _match_universal(text)
         if universal:
-            antecedent = parse_atom(f"someone is a {universal.group(1)}")
-            if re.search(r"\s+or\s+", universal.group(2), flags=re.IGNORECASE):
+            subject_text, predicate_text = universal
+            if re.search(r"\s+or\s+", predicate_text, flags=re.IGNORECASE):
                 continue
+            antecedents = tuple(
+                atom
+                for clause in _split_list(subject_text)
+                if (atom := parse_atom(f"someone is {clause}")) is not None
+            )
             consequents = [
-                parse_atom(f"someone is a {clause}")
-                for clause in re.split(r"\s+and\s+", universal.group(2), flags=re.IGNORECASE)
+                atom
+                for clause in _split_list(predicate_text)
+                if (atom := parse_atom(f"someone is {clause}")) is not None
             ]
-            consequents = [consequent for consequent in consequents if consequent]
-            if antecedent and consequents:
+            if antecedents and consequents:
                 for index, consequent in enumerate(consequents, start=1):
                     suffix = f"_{index}" if len(consequents) > 1 else ""
                     rules.append(
                         Rule(
                             premise["premise_id"].replace("p", "r", 1) + suffix,
                             premise["text"],
-                            (antecedent,),
+                            antecedents,
                             (consequent,),
                             source_premise_ids=(premise["premise_id"],),
                         )
@@ -274,23 +346,15 @@ def extract_rules(premises: list[dict[str, str]]) -> list[Rule]:
         if not conditional:
             continue
         antecedent_text, consequent_text = conditional.groups()
-        antecedents = tuple(
-            atom
-            for clause in re.split(r"\s+and\s+", antecedent_text, flags=re.IGNORECASE)
-            if (atom := parse_atom(clause)) is not None
-        )
+        antecedents = _parse_conjuncts(antecedent_text)
         disjunctive = bool(re.search(r"\s+or\s+", consequent_text, flags=re.IGNORECASE))
         conjunctions = re.split(r"\s+or\s+", consequent_text, flags=re.IGNORECASE) if disjunctive else [consequent_text]
-        consequent_clauses = [
-            clause
-            for conjunction in conjunctions
-            for clause in re.split(r"\s+and\s+", conjunction, flags=re.IGNORECASE)
-        ]
         consequents = tuple(
             atom
-            for clause in consequent_clauses
-            if (atom := parse_atom(clause)) is not None
+            for conjunction in conjunctions
+            for atom in _parse_conjuncts(conjunction)
         )
+        antecedents, consequents = _bind_rule_pronouns(antecedents, consequents)
         if antecedents and consequents:
             rules.append(
                 Rule(

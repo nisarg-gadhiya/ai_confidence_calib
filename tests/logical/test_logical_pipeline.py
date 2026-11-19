@@ -318,3 +318,75 @@ def test_pipeline_reports_inconsistent_premises_without_external_retrieval(monke
     assert result["steps"][0]["claims"][0]["calibrated_probability"] is None
     assert result["steps"][0]["claims"][0]["self_verification_score"] is None
     assert result["steps"][0]["sample_count"] == 0
+
+RULETAKER_CONTEXT = (
+    "Anne is big. Anne is cold. Anne is furry. Anne is green. Anne is red. Anne is rough. "
+    "Erin is cold. Erin is furry. Erin is green. Erin is round. "
+    "If something is cold then it is furry. If something is round then it is rough. "
+    "If something is green and cold then it is furry. All furry things are round. "
+    "Red things are big. If something is rough then it is furry. "
+    "All rough things are cold. All red things are round. "
+)
+
+
+def test_ruletaker_style_rules_use_variables_and_generic_plurals():
+    rules = extract_rules(extract_premises(RULETAKER_CONTEXT + "Is Anne red?"))
+    by_id = {rule.rule_id: rule for rule in rules}
+
+    assert len(rules) == 8
+    # "something ... it" binds one variable.
+    assert [atom.key for atom in by_id["r11"].antecedents] == [("$x", "cold", None, False)]
+    assert [atom.key for atom in by_id["r11"].consequents] == [("$x", "furry", None, False)]
+    # "green and cold" shares the subject of the first conjunct.
+    assert [atom.key for atom in by_id["r13"].antecedents] == [
+        ("$x", "green", None, False),
+        ("$x", "cold", None, False),
+    ]
+    # "All furry things are round" drops the head noun; "Red things are big" is parsed at all.
+    assert [atom.predicate for atom in by_id["r14"].antecedents] == ["furry"]
+    assert [atom.predicate for atom in by_id["r15"].antecedents] == ["red"]
+
+
+@pytest.mark.parametrize(
+    ("question", "expected"),
+    [
+        ("Is Anne red?", "ENTAILED"),
+        ("Is Anne round?", "ENTAILED"),
+        ("Is Anne not round?", "CONTRADICTED"),
+        ("Is Erin rough?", "ENTAILED"),
+        ("Is Erin big?", "UNKNOWN"),
+    ],
+)
+def test_ruletaker_style_rules_fire_in_solver(question, expected):
+    *_, verification = _check_question(RULETAKER_CONTEXT + question)
+
+    assert verification["verdict"] == expected
+
+
+def test_comma_separated_generic_qualifiers_become_conjunctive_rule():
+    rules = extract_rules(extract_premises("All rough, green things are not nice. Bob is rough."))
+
+    assert [atom.predicate for atom in rules[0].antecedents] == ["rough", "green"]
+    assert rules[0].consequents[0].key == ("$x", "nice", None, True)
+
+
+def test_plain_it_fact_is_not_turned_into_a_variable():
+    assert parse_atom("It is raining").subject == "it"
+
+
+def test_reasoning_steps_follow_only_the_target_proof():
+    from logical.decomposition.decomposer import build_reasoning_steps
+
+    question = (
+        "Bob is young. Ann is tall. If someone is young then they are kind. "
+        "Kind people are nice. All nice things are happy. "
+        "If someone is tall then they are strong. Is Bob happy?"
+    )
+    _, rules, engine, verification = _check_question(question)
+    target = parse_atom(extract_target_statement(question))
+    steps = build_reasoning_steps(engine, target, verification, rules)
+
+    assert verification["verdict"] == "ENTAILED"
+    assert [step["text"] for step in steps] == ["Bob is kind.", "Bob is nice.", "Bob is happy."]
+    # "Ann is strong" is derivable but irrelevant to the question.
+    assert any(item.atom.to_text() == "Ann is strong" for item in engine.derivations)

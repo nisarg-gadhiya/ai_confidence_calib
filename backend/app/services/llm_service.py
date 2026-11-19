@@ -78,6 +78,16 @@ class LLMService:
     ) -> LLMResponse:
         return self._generate(question, prefix=None)
 
+    def generate_factual_reasoning(self, question: str) -> LLMResponse:
+        from factual.prompts import FACTUAL_REASONING_PROMPT
+
+        return self._generate(
+            question,
+            prefix=None,
+            system_prompt=FACTUAL_REASONING_PROMPT,
+            require_steps=False,
+        )
+
     def generate_logical_reasoning(self, question: str) -> LLMResponse:
         from logical.prompts import LOGICAL_REASONING_SYSTEM_PROMPT
 
@@ -451,6 +461,8 @@ class LLMService:
         self,
         question: str,
         prefix: str | None,
+        system_prompt: str | None = None,
+        require_steps: bool = True,
     ) -> LLMResponse:
         user_content = {"question": question}
         if prefix:
@@ -459,7 +471,7 @@ class LLMService:
         messages = [
             {
                 "role": "system",
-                "content": (
+                "content": system_prompt or (
                     "Solve the user's question. Return JSON with a 'steps' "
                     "array of objects containing integer 'step_number' and "
                     "concise user-facing 'text' and 'step_type' chosen from "
@@ -477,7 +489,10 @@ class LLMService:
             num_samples=1,
         )
 
-        steps, answer = self._parse_reasoning(responses[0].data)
+        steps, answer = self._parse_reasoning(
+            responses[0].data,
+            require_steps=require_steps,
+        )
         text = "\n".join(
             f"Step {step.step_number}: {step.text}"
             for step in steps
@@ -618,9 +633,14 @@ class LLMService:
     @staticmethod
     def _parse_reasoning(
         response: dict[str, Any],
+        require_steps: bool = True,
     ) -> tuple[list[GeneratedStep], str | None]:
         steps = response.get("steps")
-        if not isinstance(steps, list) or not steps:
+        if not isinstance(steps, list):
+            if require_steps:
+                raise ValueError("The model returned no reasoning steps.")
+            steps = []
+        elif not steps and require_steps:
             raise ValueError("The model returned no reasoning steps.")
 
         parsed_steps: list[GeneratedStep] = []
@@ -641,12 +661,16 @@ class LLMService:
                 )
             )
 
-        if not parsed_steps:
+        if not parsed_steps and require_steps:
             raise ValueError("The model returned no usable reasoning steps.")
 
         answer = response.get("final_answer")
         if not isinstance(answer, str) or not answer.strip():
             answer = None
+        if not parsed_steps and answer is None:
+            raise ValueError(
+                "The model returned neither usable reasoning steps nor a final answer."
+            )
 
         return parsed_steps, answer
 

@@ -34,6 +34,36 @@ def test_generate_reasoning_returns_structured_steps():
     assert client.chat.completions.create.call_args.kwargs["n"] == 1
 
 
+def test_generate_factual_reasoning_uses_answer_focused_prompt():
+    client = Mock()
+    client.chat.completions.create.return_value = _completion(
+        '{"steps":[{"step_number":1,"text":"The capital of India is New Delhi.",'
+        '"step_type":"factual_recall"}],"final_answer":"New Delhi"}',
+    )
+    service = LLMService(client=client)
+
+    result = service.generate_factual_reasoning("What is the capital of India?")
+
+    assert result.final_answer == "New Delhi"
+    system_prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
+    assert "final_answer must directly answer" in system_prompt
+    assert "Do not write instructions or plans" in system_prompt
+    assert '"step_number":1' in system_prompt
+
+
+def test_generate_factual_reasoning_accepts_final_answer_without_steps():
+    client = Mock()
+    client.chat.completions.create.return_value = _completion(
+        '{"steps":[],"final_answer":"Paris"}',
+    )
+    service = LLMService(client=client)
+
+    result = service.generate_factual_reasoning("What is the capital of France?")
+
+    assert result.steps == []
+    assert result.final_answer == "Paris"
+
+
 def test_generate_logical_reasoning_uses_premises_only_prompt():
     client = Mock()
     client.chat.completions.create.return_value = _completion(

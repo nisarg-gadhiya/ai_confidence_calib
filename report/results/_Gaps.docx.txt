@@ -1,0 +1,406 @@
+Yes. Now that I have your complete mechanism and the actual four papers, we can make the comparison much more precise.
+The key is to distinguish:
+What method the paper actually uses
+What limitation/gap remains
+What your project does differently
+Whether your project actually solves that gap
+Your project is not solving every limitation of all four papers. Its main contribution is taking the existing confidence methods and moving them from response-level → reasoning-step level, then fusing them for error localization. Your mechanism explicitly describes this structural extension.
+1. Paper 1 — Normalization-Aware Isotonic Calibration
+Paper's method
+Paper 1 focuses on multiclass probability calibration.
+It proposes:
+FIR — Flattened Isotonic Regression
+and
+NA-FIR — Normalization-Aware Flattened Isotonic Regression
+The important difference is that NA-FIR accounts for the normalization/collateral effects between class probabilities, rather than calibrating every class independently. It uses PAVA for initialization and then uses MCMC/simulated annealing because the normalized optimization is no longer convex.
+It also proposes:
+SCIR — Sorted Cumulative Isotonic Regression
+which incorporates ranking/order information into calibration.
+What is the limitation relevant to your project?
+Paper 1 is fundamentally about:
+Input
+ ↓
+Multiclass prediction
+ ↓
+Calibrated class probabilities
+It does not analyze the internal reasoning chain of an LLM.
+So the relevant gap for your project is:
+Probability calibration operates on the model's prediction, rather than providing confidence for individual reasoning steps inside a generated reasoning chain.
+How your project solves/extends this
+You change the unit being calibrated:
+Paper 1
+Prediction
+ ↓
+[P(class 1), P(class 2), ..., P(class K)]
+ ↓
+Calibration
+Your project
+LLM response
+ ↓
+Step 1 → confidence
+Step 2 → confidence
+Step 3 → confidence
+Step 4 → confidence
+ ↓
+Step-level confidence profile
+Your mechanism explicitly says that the unit of confidence estimation becomes the reasoning step instead of the complete response.
+But IMPORTANT:
+❌ You are NOT implementing NA-FIR/SCIR.
+❌ You are NOT solving Paper 1's multiclass normalization problem.
+Your project is borrowing the broader idea of calibration, but applying it at a different granularity.
+So in your thesis, say:
+"Our work extends the granularity of confidence calibration from model-level prediction to individual reasoning steps."
+Don't say:
+"We solve the NA-FIR problem."
+2. Paper 2 — Reassessing Calibration and Sharpness
+Paper's method
+Paper 2 focuses on the fact that calibration should not be considered independently from sharpness/generalization.
+It develops a calibration–sharpness decomposition based on Bregman divergence.
+Conceptually:
+Prediction Error=Sharpness Gap+Calibration Error\text{Prediction Error} = \text{Sharpness Gap} + \text{Calibration Error}
+The paper then uses calibration-sharpness diagrams to compare methods such as:
+Temperature Scaling (TS)
+Histogram Binning (HB)
+Isotonic Regression (IR)
+MRR
+For example, the paper reports calibration-sharpness diagrams using MSE/Brier score for different models.
+What gap does this reveal for your project?
+Traditional calibration metrics answer:
+"Is the confidence numerically reliable?"
+But they don't answer:
+"Where in a reasoning chain did the model become unreliable?"
+That's where your project goes beyond conventional calibration evaluation.
+How your project solves it
+Your project retains standard calibration metrics:
+ECE
+Brier
+NLL
+AUROC
+MCE
+but adds:
+Top-1 error localization
+and
+Top-2 error localization
+Your mechanism explicitly defines:
+Likely Error Step=arg⁡min⁡iCi\text{Likely Error Step} = \arg\min_i C_i
+and evaluates whether that predicted step corresponds to the actual error.
+So:
+Paper 2
+Is the confidence calibrated?
+        +
+Is the confidence sharp?
+Your project
+Is the confidence calibrated?
+        +
+Which reasoning step is unreliable?
+But another IMPORTANT distinction
+❌ Your current project does not fully solve Paper 2's calibration–sharpness gap.
+You aren't currently implementing their Bregman calibration-sharpness decomposition.
+So you should say:
+"We extend calibration evaluation with a reasoning-specific error-localization dimension."
+rather than:
+"We solve the calibration-sharpness problem."
+3. Paper 3 — Temperature Scaling Is Not Enough
+This paper has a very different focus.
+Paper's method
+The paper studies:
+Temperature Scaling
+A scalar temperature TT is learned on a validation set by minimizing NLL:
+T∗=arg⁡min⁡T−1N∑ilog⁡pT(yi∣xi)T^* = \arg\min_T -\frac{1}{N} \sum_i \log p_T(y_i|x_i)
+and:
+pT(y∣x)=softmax(logits(x)T)p_T(y|x) = softmax\left(\frac{logits(x)}{T}\right)
+The paper also compares against multiclass isotonic regression.
+But its major contribution is testing calibration against soft human-label distributions rather than only hard labels.
+For example:
+Hard label:
+Correct = 1
+Soft human label:
+Correct = 0.7
+Incorrect = 0.3
+The paper defines a soft-label calibration gap by comparing hard-label calibrated performance against an oracle calibrated directly on soft labels.
+What gap from Paper 3 does your project solve?
+There is a partial connection.
+Paper 3 asks:
+Is the model's confidence calibrated against the actual target distribution?
+Your project asks:
+Is confidence calibrated against the correctness of each individual reasoning step?
+You move the target from:
+Final answer correctness
+to:
+Step correctness
+Your mechanism explicitly creates per-step correctness labels and evaluates the confidence of each step.
+But your project DOES NOT solve Paper 3's main soft-label gap
+This is very important.
+Your current mechanism uses:
+yi∈{0,1}y_i \in \{0,1\}
+for step correctness.
+Paper 3 uses:
+qi=[qclass1,qclass2,...]q_i = [q_{\text{class1}},q_{\text{class2}},...]
+representing human disagreement.
+So:
+Paper 3
+Human disagreement
+       ↓
+Soft label distribution
+       ↓
+Temperature / isotonic calibration
+Your project
+Step
+ ↓
+Correct / Incorrect
+ ↓
+Step confidence
+ ↓
+Error localization
+Therefore:
+You address the granularity problem highlighted by the broader calibration literature, but you do not currently address Paper 3's soft human-label calibration problem.
+That's the academically correct statement.
+4. Paper 4 — Semantic-Level Confidence Calibration
+This is the closest paper to your project.
+Paper's method
+Paper 4 starts with a major limitation:
+Token-level confidence is insufficient for open-ended language generation because different outputs can have the same meaning.
+It therefore generates:
+mm
+responses:
+y(1),y(2),...,y(m)y^{(1)},y^{(2)},...,y^{(m)}
+and groups them into semantic clusters using semantic equivalence/NLI.
+It then derives semantic confidence measures such as:
+E-SC
+Empirical Semantic Confidence
+P(Ci∣x)=∣Ci∣mP(C_i|x)=\frac{|C_i|}{m}
+L-SC
+Likelihood-based Semantic Confidence
+ML-SC
+Mean Likelihood-based Semantic Confidence
+B-SC
+Bayesian Semantic Confidence
+The paper then applies temperature scaling to study whether semantic confidence can be calibrated.
+It also investigates scalar and adaptive temperature scaling.
+This is where your project makes the strongest extension
+Paper 4:
+Question
+   ↓
+Generate multiple COMPLETE responses
+   ↓
+Semantic clustering
+   ↓
+Semantic confidence
+   ↓
+Temperature scaling
+   ↓
+Response-level semantic calibration
+Your project:
+Question
+   ↓
+Generate reasoning chain
+   ↓
+Step 1
+Step 2
+Step 3
+Step 4
+   ↓
+For EACH step
+   ↓
+Generate multiple continuations
+   ↓
+Consistency / semantic agreement
+   ↓
+Step confidence
+   ↓
+Fuse with other signals
+   ↓
+Error localization
+Your mechanism explicitly proposes applying semantic clustering at each step boundary, rather than only to the final response.
+5. The biggest difference: you don't rely on semantic confidence alone
+Paper 4 primarily develops semantic confidence measures and investigates temperature scaling.
+Your project combines multiple signals.
+Your mechanism explicitly proposes:
+1. Self-verification
+SiS_i
+2. Continuation consistency
+AiA_i
+3. Token confidence
+TiT_i
+and then:
+Ci=w1Si+w2Ai+w3TiC_i=w_1S_i+w_2A_i+w_3T_i
+for the prototype.
+Eventually, the project can use a learned model such as XGBoost to estimate:
+P(step correct∣features)P(\text{step correct}\mid features)
+instead of relying on manually selected weights.
+6. Your project therefore combines the methods like this
+This is probably the most useful table for your FYP:
+7. Now the exact gaps your project solves
+Based on your actual mechanism, I would state these as your project's contributions.
+GAP 1 — Response-level → step-level confidence ⭐⭐⭐
+Existing methods
+Question
+ ↓
+Complete response
+ ↓
+Confidence
+Your project
+Question
+ ↓
+Reasoning chain
+ ↓
+Step 1 → confidence
+Step 2 → confidence
+Step 3 → confidence
+...
+This is your primary research gap.
+Your mechanism explicitly identifies this as the central problem.
+Papers connected: 1, 3, 4.
+GAP 2 — Lack of error localization ⭐⭐⭐
+Existing calibration can tell you:
+"The answer has low confidence."
+Your project tells you:
+"Step 3 is the most likely source of the error."
+Using:
+arg⁡min⁡iCi\arg\min_i C_i
+and Top-1/Top-2 evaluation.
+Papers connected: especially 2, with conceptual connection to 1/3/4.
+GAP 3 — Response-level sampling → step-level sampling ⭐⭐⭐
+Paper 4:
+Question→{Response1,…,Responsem}Question\rightarrow \{Response_1,\ldots,Response_m\}
+Your project:
+Prefixi→{Continuationi1,...,ContinuationiK}Prefix_i\rightarrow \{Continuation_{i1},...,Continuation_{iK}\}
+This means you can identify where instability first appears.
+Your mechanism explicitly uses prefix-conditioned sampling for this purpose.
+Paper connected: primarily Paper 4.
+GAP 4 — Single/individual confidence signal → multi-signal fusion ⭐⭐⭐
+Instead of relying on one method:
+Only token probability
+OR
+Only self-confidence
+OR
+Only consistency
+you combine:
+Self-verification+Consistency+Token-level+Semantic+…\boxed{ Self\text{-}verification + Consistency + Token\text{-}level + Semantic +\ldots }
+Your complete framework explicitly describes this systematic fusion.
+Papers connected: 1, 3, 4.
+GAP 5 — No adaptation to reasoning-step type ⭐⭐
+Your project recognizes:
+Arithmetic
+    ↓
+Consistency/recomputation
+Factual
+    ↓
+Evidence/verification
+Logical
+    ↓
+Semantic consistency + verification
+Your mechanism proposes classifying each step before deciding how the signals should be fused.
+This means you aren't simply saying:
+C=0.4S+0.4A+0.2TC=0.4S+0.4A+0.2T
+for every step.
+Eventually:
+Ci=f(features,step type)C_i=f(\text{features},\text{step type})
+Papers connected: mainly Paper 4's adaptive calibration idea, but your application to reasoning-step types is your extension.
+GAP 6 — Standard calibration does not measure error localization ⭐⭐
+Paper 2 gives us calibration/sharpness evaluation.
+Your project adds a new question:
+Did the confidence identify the correct reasoning step?\boxed{\text{Did the confidence identify the correct reasoning step?}}
+Hence:
+Top-1 localization
+Top-2 localization
+plus:
+ECE
+MCE
+Brier
+NLL
+AUROC
+Your mechanism explicitly proposes this evaluation.
+GAP 7 — Uncertainty propagation through reasoning ⭐⭐
+Your project also considers:
+S1 ✓
+ ↓
+S2 ✓
+ ↓
+S3 ✗
+ ↓
+S4 depends on S3
+ ↓
+S5 depends on S4
+So uncertainty/error isn't treated as completely independent across steps.
+Your mechanism explicitly identifies the possibility that later steps inherit uncertainty from earlier errors.
+This is a secondary research contribution, not the main one.
+🔴 What your project is NOT solving
+This is extremely important when you present the work.
+Paper 1
+❌ You are not solving the multiclass normalization problem of NA-FIR.
+Paper 2
+❌ You are not yet solving the calibration–sharpness trade-off using their Bregman decomposition.
+Paper 3
+❌ You are not currently solving soft human-label calibration.
+Paper 4
+❌ You are not replacing temperature scaling as a semantic calibrator.
+Instead, you are extending the semantic/consistency idea from complete responses to reasoning steps and combining it with other confidence signals.
+🎯 So what is YOUR actual research contribution?
+I would summarize the entire thing as:
+Step-Level Multi-Signal Confidence Calibration and Error Localization for LLM Reasoning
+And break it into four contributions:
+C1 — Granularity
+Move from:
+Response-level confidence\boxed{\text{Response-level confidence}}
+to:
+Step-level confidence\boxed{\text{Step-level confidence}}
+C2 — Multi-signal fusion
+Combine:
+Self-verification+Consistency+Token uncertainty+Semantic uncertainty\boxed{ \text{Self-verification} + \text{Consistency} + \text{Token uncertainty} + \text{Semantic uncertainty} }
+Your mechanism explicitly describes this systematic fusion.
+C3 — Adaptive reasoning-aware calibration
+Make the confidence model aware of the type of reasoning step.
+C4 — Error localization
+Use the resulting confidence profile:
+[C1,C2,…,Cn][C_1,C_2,\ldots,C_n]
+to identify the most suspicious step and evaluate it using Top-1/Top-2 localization accuracy.
+The simplest way to explain the relationship to the 4 papers
+PAPER 1
+Calibration
+     │
+     ▼
+"How do we calibrate probabilities?"
+     │
+     └─────────────┐
+                   │
+PAPER 2            │
+Calibration        │
++ Sharpness        │
+     │             │
+     └─────────────┤
+                   │
+PAPER 3            │
+Hard vs Soft      │
+Label Calibration │
+     │             │
+     └─────────────┤
+                   │
+PAPER 4            │
+Semantic           │
+Confidence         │
+     │             │
+     └─────────────┘
+                   ↓
+             YOUR PROJECT
+                   ↓
+       "Where in the reasoning
+        chain is the uncertainty?"
+                   ↓
+        Step-level confidence
+                   ↓
+       Multi-signal fusion
+                   ↓
+       Adaptive step weighting
+                   ↓
+          Error localization
+Your novelty is NOT "we invented a new confidence signal."
+Your stronger claim is:
+We take established confidence signals from the literature and change the unit of analysis from the complete LLM response to individual reasoning steps, systematically fuse those signals, and use the resulting confidence profile to localize reasoning errors.
+That is the cleanest and most defensible way to position your project against the four papers.
+
+Paper | Method used in paper | What it does | What your project changes
+Paper 1 | FIR, NA-FIR, SCIR | Calibrates multiclass probabilities while accounting for normalization/order | You shift calibration from model prediction to individual reasoning steps
+Paper 2 | Calibration–sharpness decomposition + calibration-sharpness diagrams | Evaluates calibration together with sharpness/generalization | You add reasoning-error localization to conventional calibration evaluation
+Paper 3 | Temperature Scaling + isotonic regression under hard vs soft labels | Tests whether hard-label calibration works for human-distributional targets | You estimate confidence for each reasoning step, but currently still use binary correctness
+Paper 4 | Multi-sampling + semantic clustering/NLI + E-SC/L-SC/ML-SC/B-SC + temperature scaling | Measures and calibrates semantic confidence of complete responses | You move semantic/consistency analysis to individual reasoning steps and fuse it with other signals

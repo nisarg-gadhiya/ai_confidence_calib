@@ -14,6 +14,8 @@ class Derivation:
     rule_ids: frozenset[str]
     operation: str
     depth: int
+    # Keys of the facts this one was derived from, so a proof can be traced back.
+    parent_keys: tuple[tuple[str, str, str | None, bool], ...] = ()
 
     @property
     def checks(self) -> int:
@@ -109,6 +111,7 @@ def _combine_derivations(
         rule_ids,
         operation,
         max((item.depth for item in sources), default=0) + 1,
+        tuple(item.atom.key for item in sources),
     )
 
 

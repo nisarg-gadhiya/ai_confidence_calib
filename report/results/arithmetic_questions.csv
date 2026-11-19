@@ -1,0 +1,6 @@
+question_id,gold_answer,predicted_answer,correct,final_answer_confidence,steps,predicted_error_step,confidence_method
+gsm8k-test-0001,18.0,18.0,1,0.6081216113995789,13,13,type_adaptive_weighted_proxy
+gsm8k-test-0002,3.0,3.0,1,0.6436637343765591,3,2,type_adaptive_weighted_proxy
+gsm8k-test-0003,70000.0,70000.0,1,0.598553811569944,6,1,type_adaptive_weighted_proxy
+gsm8k-test-0004,540.0,540.0,1,0.6175115287721356,4,3,type_adaptive_weighted_proxy
+gsm8k-test-0005,20.0,20.0,1,0.626494828913593,6,2,type_adaptive_weighted_proxy

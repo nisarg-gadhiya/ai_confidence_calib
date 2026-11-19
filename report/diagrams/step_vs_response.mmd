@@ -1,0 +1,11 @@
+flowchart TB
+    subgraph RL["Response-level confidence (prior work)"]
+        direction LR
+        Q1["Question"] --> R1["Complete response"] --> C1["One confidence score<br/>for the whole answer"]
+    end
+    subgraph SL["Step-level confidence (Calibra)"]
+        direction LR
+        Q2["Question"] --> S1["Step 1<br/>c1"] --> S2["Step 2<br/>c2"] --> S3["Step 3<br/>c3 (lowest)"] --> S4["Step 4<br/>c4"]
+        S4 --> A2["Answer confidence<br/>+ flagged step = argmin c_i"]
+    end
+    RL ~~~ SL

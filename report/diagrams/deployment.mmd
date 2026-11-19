@@ -1,0 +1,11 @@
+flowchart TD
+    subgraph Dev["Developer workstation (Windows 11)"]
+        B["Browser<br/>localhost:5173"] --> V["Vite dev server<br/>npm run dev"]
+        V -. "HTTP + CORS (localhost, any port)" .-> U["Uvicorn :8000<br/>FastAPI app"]
+        U --> FS[("backend/data/<br/>calibration_runs.json")]
+        U --> ENV[".env<br/>LLM_API_KEY, LLM_MODEL,<br/>FACTUAL_SEARCH_MODEL ..."]
+        U --> Z3["z3-solver<br/>in-process"]
+    end
+    U -- HTTPS --> OAI[("OpenAI API<br/>chat completions,<br/>responses + web_search")]
+    OAI -- "cited URLs" --> WEB[("Public web pages")]
+    U -- "page fetch" --> WEB

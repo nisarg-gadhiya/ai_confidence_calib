@@ -1,0 +1,349 @@
+{
+  "guo2017": {
+    "ieee": "C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, “On calibration of modern neural networks,” in *Proc. 34th Int. Conf. Machine Learning (ICML)*, PMLR vol. 70, 2017, pp. 1321–1330.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Guo, Chuan and Pleiss, Geoff and Sun, Yu and Weinberger, Kilian Q.",
+      "title": "On Calibration of Modern Neural Networks",
+      "booktitle": "Proceedings of the 34th International Conference on Machine Learning (ICML)",
+      "series": "PMLR",
+      "volume": "70",
+      "pages": "1321--1330",
+      "year": "2017"
+    }
+  },
+  "naeini2015": {
+    "ieee": "M. P. Naeini, G. F. Cooper, and M. Hauskrecht, “Obtaining well calibrated probabilities using Bayesian binning,” in *Proc. 29th AAAI Conf. Artificial Intelligence*, 2015, pp. 2901–2907.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Naeini, Mahdi Pakdaman and Cooper, Gregory F. and Hauskrecht, Milos",
+      "title": "Obtaining Well Calibrated Probabilities Using {Bayesian} Binning",
+      "booktitle": "Proceedings of the 29th AAAI Conference on Artificial Intelligence",
+      "pages": "2901--2907",
+      "year": "2015"
+    }
+  },
+  "brier1950": {
+    "ieee": "G. W. Brier, “Verification of forecasts expressed in terms of probability,” *Monthly Weather Review*, vol. 78, no. 1, pp. 1–3, 1950.",
+    "bib": {
+      "type": "article",
+      "author": "Brier, Glenn W.",
+      "title": "Verification of Forecasts Expressed in Terms of Probability",
+      "journal": "Monthly Weather Review",
+      "volume": "78",
+      "number": "1",
+      "pages": "1--3",
+      "year": "1950"
+    }
+  },
+  "platt1999": {
+    "ieee": "J. C. Platt, “Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods,” in *Advances in Large Margin Classifiers*, A. J. Smola, P. Bartlett, B. Schölkopf, and D. Schuurmans, Eds. Cambridge, MA, USA: MIT Press, 1999, pp. 61–74.",
+    "bib": {
+      "type": "incollection",
+      "author": "Platt, John C.",
+      "title": "Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods",
+      "booktitle": "Advances in Large Margin Classifiers",
+      "editor": "Smola, Alexander J. and Bartlett, Peter and Sch{\\\"o}lkopf, Bernhard and Schuurmans, Dale",
+      "publisher": "MIT Press",
+      "address": "Cambridge, MA, USA",
+      "pages": "61--74",
+      "year": "1999"
+    }
+  },
+  "zadrozny2002": {
+    "ieee": "B. Zadrozny and C. Elkan, “Transforming classifier scores into accurate multiclass probability estimates,” in *Proc. 8th ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining*, 2002, pp. 694–699.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Zadrozny, Bianca and Elkan, Charles",
+      "title": "Transforming Classifier Scores into Accurate Multiclass Probability Estimates",
+      "booktitle": "Proceedings of the 8th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining",
+      "pages": "694--699",
+      "year": "2002"
+    }
+  },
+  "kadavath2022": {
+    "ieee": "S. Kadavath *et al.*, “Language models (mostly) know what they know,” arXiv:2207.05221, 2022.",
+    "bib": {
+      "type": "misc",
+      "author": "Kadavath, Saurav and others",
+      "title": "Language Models (Mostly) Know What They Know",
+      "howpublished": "arXiv:2207.05221",
+      "year": "2022"
+    }
+  },
+  "kuhn2023": {
+    "ieee": "L. Kuhn, Y. Gal, and S. Farquhar, “Semantic uncertainty: Linguistic invariances for uncertainty estimation in natural language generation,” in *Proc. 11th Int. Conf. Learning Representations (ICLR)*, 2023.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Kuhn, Lorenz and Gal, Yarin and Farquhar, Sebastian",
+      "title": "Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation",
+      "booktitle": "Proceedings of the 11th International Conference on Learning Representations (ICLR)",
+      "year": "2023"
+    }
+  },
+  "farquhar2024": {
+    "ieee": "S. Farquhar, J. Kossen, L. Kuhn, and Y. Gal, “Detecting hallucinations in large language models using semantic entropy,” *Nature*, vol. 630, no. 8017, pp. 625–630, 2024.",
+    "bib": {
+      "type": "article",
+      "author": "Farquhar, Sebastian and Kossen, Jannik and Kuhn, Lorenz and Gal, Yarin",
+      "title": "Detecting Hallucinations in Large Language Models Using Semantic Entropy",
+      "journal": "Nature",
+      "volume": "630",
+      "number": "8017",
+      "pages": "625--630",
+      "year": "2024"
+    }
+  },
+  "wang2023": {
+    "ieee": "X. Wang, J. Wei, D. Schuurmans, Q. Le, E. Chi, S. Narang, A. Chowdhery, and D. Zhou, “Self-consistency improves chain of thought reasoning in language models,” in *Proc. 11th Int. Conf. Learning Representations (ICLR)*, 2023.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Wang, Xuezhi and Wei, Jason and Schuurmans, Dale and Le, Quoc and Chi, Ed and Narang, Sharan and Chowdhery, Aakanksha and Zhou, Denny",
+      "title": "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
+      "booktitle": "Proceedings of the 11th International Conference on Learning Representations (ICLR)",
+      "year": "2023"
+    }
+  },
+  "wei2022": {
+    "ieee": "J. Wei, X. Wang, D. Schuurmans, M. Bosma, B. Ichter, F. Xia, E. Chi, Q. V. Le, and D. Zhou, “Chain-of-thought prompting elicits reasoning in large language models,” in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 35, 2022, pp. 24824–24837.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Wei, Jason and Wang, Xuezhi and Schuurmans, Dale and Bosma, Maarten and Ichter, Brian and Xia, Fei and Chi, Ed and Le, Quoc V. and Zhou, Denny",
+      "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+      "booktitle": "Advances in Neural Information Processing Systems (NeurIPS)",
+      "volume": "35",
+      "pages": "24824--24837",
+      "year": "2022"
+    }
+  },
+  "lightman2023": {
+    "ieee": "H. Lightman *et al.*, “Let’s verify step by step,” in *Proc. 12th Int. Conf. Learning Representations (ICLR)*, 2024. arXiv:2305.20050.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Lightman, Hunter and others",
+      "title": "Let's Verify Step by Step",
+      "booktitle": "Proceedings of the 12th International Conference on Learning Representations (ICLR)",
+      "year": "2024",
+      "note": "arXiv:2305.20050"
+    }
+  },
+  "uesato2022": {
+    "ieee": "J. Uesato *et al.*, “Solving math word problems with process- and outcome-based feedback,” arXiv:2211.14275, 2022.",
+    "bib": {
+      "type": "misc",
+      "author": "Uesato, Jonathan and others",
+      "title": "Solving Math Word Problems with Process- and Outcome-Based Feedback",
+      "howpublished": "arXiv:2211.14275",
+      "year": "2022"
+    }
+  },
+  "manakul2023": {
+    "ieee": "P. Manakul, A. Liusie, and M. J. F. Gales, “SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models,” in *Proc. 2023 Conf. Empirical Methods in Natural Language Processing (EMNLP)*, 2023, pp. 9004–9017.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Manakul, Potsawee and Liusie, Adian and Gales, Mark J. F.",
+      "title": "{SelfCheckGPT}: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models",
+      "booktitle": "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+      "pages": "9004--9017",
+      "year": "2023"
+    }
+  },
+  "min2023": {
+    "ieee": "S. Min, K. Krishna, X. Lyu, M. Lewis, W. Yih, P. W. Koh, M. Iyyer, L. Zettlemoyer, and H. Hajishirzi, “FActScore: Fine-grained atomic evaluation of factual precision in long form text generation,” in *Proc. 2023 Conf. Empirical Methods in Natural Language Processing (EMNLP)*, 2023, pp. 12076–12100.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Min, Sewon and Krishna, Kalpesh and Lyu, Xinxi and Lewis, Mike and Yih, Wen-tau and Koh, Pang Wei and Iyyer, Mohit and Zettlemoyer, Luke and Hajishirzi, Hannaneh",
+      "title": "{FActScore}: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation",
+      "booktitle": "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+      "pages": "12076--12100",
+      "year": "2023"
+    }
+  },
+  "xiong2024": {
+    "ieee": "M. Xiong, Z. Hu, X. Lu, Y. Li, J. Fu, J. He, and B. Hooi, “Can LLMs express their uncertainty? An empirical evaluation of confidence elicitation in LLMs,” in *Proc. 12th Int. Conf. Learning Representations (ICLR)*, 2024.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Xiong, Miao and Hu, Zhiyuan and Lu, Xinyang and Li, Yifei and Fu, Jie and He, Junxian and Hooi, Bryan",
+      "title": "Can {LLMs} Express Their Uncertainty? An Empirical Evaluation of Confidence Elicitation in {LLMs}",
+      "booktitle": "Proceedings of the 12th International Conference on Learning Representations (ICLR)",
+      "year": "2024"
+    }
+  },
+  "tian2023": {
+    "ieee": "K. Tian, E. Mitchell, A. Zhou, A. Sharma, R. Rafailov, H. Yao, C. Finn, and C. D. Manning, “Just ask for calibration: Strategies for eliciting calibrated confidence scores from language models fine-tuned with human feedback,” in *Proc. 2023 Conf. Empirical Methods in Natural Language Processing (EMNLP)*, 2023.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Tian, Katherine and Mitchell, Eric and Zhou, Allan and Sharma, Archit and Rafailov, Rafael and Yao, Huaxiu and Finn, Chelsea and Manning, Christopher D.",
+      "title": "Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback",
+      "booktitle": "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+      "year": "2023"
+    }
+  },
+  "cobbe2021": {
+    "ieee": "K. Cobbe *et al.*, “Training verifiers to solve math word problems,” arXiv:2110.14168, 2021.",
+    "bib": {
+      "type": "misc",
+      "author": "Cobbe, Karl and others",
+      "title": "Training Verifiers to Solve Math Word Problems",
+      "howpublished": "arXiv:2110.14168",
+      "year": "2021"
+    }
+  },
+  "joshi2017": {
+    "ieee": "M. Joshi, E. Choi, D. S. Weld, and L. Zettlemoyer, “TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension,” in *Proc. 55th Annu. Meeting of the Association for Computational Linguistics (ACL)*, 2017, pp. 1601–1611.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Joshi, Mandar and Choi, Eunsol and Weld, Daniel S. and Zettlemoyer, Luke",
+      "title": "{TriviaQA}: A Large Scale Distantly Supervised Challenge Dataset for Reading Comprehension",
+      "booktitle": "Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (ACL)",
+      "pages": "1601--1611",
+      "year": "2017"
+    }
+  },
+  "clark2020": {
+    "ieee": "P. Clark, O. Tafjord, and K. Richardson, “Transformers as soft reasoners over language,” in *Proc. 29th Int. Joint Conf. Artificial Intelligence (IJCAI)*, 2020, pp. 3882–3890.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Clark, Peter and Tafjord, Oyvind and Richardson, Kyle",
+      "title": "Transformers as Soft Reasoners over Language",
+      "booktitle": "Proceedings of the 29th International Joint Conference on Artificial Intelligence (IJCAI)",
+      "pages": "3882--3890",
+      "year": "2020"
+    }
+  },
+  "tafjord2021": {
+    "ieee": "O. Tafjord, B. Dalvi, and P. Clark, “ProofWriter: Generating implications, proofs, and abductive statements over natural language,” in *Findings of the Association for Computational Linguistics: ACL-IJCNLP 2021*, 2021, pp. 3621–3634.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Tafjord, Oyvind and Dalvi, Bhavana and Clark, Peter",
+      "title": "{ProofWriter}: Generating Implications, Proofs, and Abductive Statements over Natural Language",
+      "booktitle": "Findings of the Association for Computational Linguistics: ACL-IJCNLP 2021",
+      "pages": "3621--3634",
+      "year": "2021"
+    }
+  },
+  "demoura2008": {
+    "ieee": "L. de Moura and N. Bjørner, “Z3: An efficient SMT solver,” in *Tools and Algorithms for the Construction and Analysis of Systems (TACAS)*, Lecture Notes in Computer Science, vol. 4963. Berlin, Germany: Springer, 2008, pp. 337–340.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "de Moura, Leonardo and Bj{\\o}rner, Nikolaj",
+      "title": "{Z3}: An Efficient {SMT} Solver",
+      "booktitle": "Tools and Algorithms for the Construction and Analysis of Systems (TACAS)",
+      "series": "Lecture Notes in Computer Science",
+      "volume": "4963",
+      "publisher": "Springer",
+      "pages": "337--340",
+      "year": "2008"
+    }
+  },
+  "chen2016": {
+    "ieee": "T. Chen and C. Guestrin, “XGBoost: A scalable tree boosting system,” in *Proc. 22nd ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining*, 2016, pp. 785–794.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Chen, Tianqi and Guestrin, Carlos",
+      "title": "{XGBoost}: A Scalable Tree Boosting System",
+      "booktitle": "Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining",
+      "pages": "785--794",
+      "year": "2016"
+    }
+  },
+  "pan2023logiclm": {
+    "ieee": "L. Pan, A. Albalak, X. Wang, and W. Y. Wang, “Logic-LM: Empowering large language models with symbolic solvers for faithful logical reasoning,” in *Findings of the Association for Computational Linguistics: EMNLP 2023*, 2023.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Pan, Liangming and Albalak, Alon and Wang, Xinyi and Wang, William Yang",
+      "title": "{Logic-LM}: Empowering Large Language Models with Symbolic Solvers for Faithful Logical Reasoning",
+      "booktitle": "Findings of the Association for Computational Linguistics: EMNLP 2023",
+      "year": "2023"
+    }
+  },
+  "zheng2023": {
+    "ieee": "L. Zheng *et al.*, “Judging LLM-as-a-judge with MT-Bench and Chatbot Arena,” in *Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track*, vol. 36, 2023.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Zheng, Lianmin and others",
+      "title": "Judging {LLM}-as-a-Judge with {MT-Bench} and {Chatbot Arena}",
+      "booktitle": "Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track",
+      "volume": "36",
+      "year": "2023"
+    }
+  },
+  "ji2023": {
+    "ieee": "Z. Ji *et al.*, “Survey of hallucination in natural language generation,” *ACM Computing Surveys*, vol. 55, no. 12, Art. no. 248, 2023.",
+    "bib": {
+      "type": "article",
+      "author": "Ji, Ziwei and others",
+      "title": "Survey of Hallucination in Natural Language Generation",
+      "journal": "ACM Computing Surveys",
+      "volume": "55",
+      "number": "12",
+      "note": "Article 248",
+      "year": "2023"
+    }
+  },
+  "lewis2020": {
+    "ieee": "P. Lewis *et al.*, “Retrieval-augmented generation for knowledge-intensive NLP tasks,” in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 33, 2020, pp. 9459–9474.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Lewis, Patrick and others",
+      "title": "Retrieval-Augmented Generation for Knowledge-Intensive {NLP} Tasks",
+      "booktitle": "Advances in Neural Information Processing Systems (NeurIPS)",
+      "volume": "33",
+      "pages": "9459--9474",
+      "year": "2020"
+    }
+  },
+  "chen2024inside": {
+    "ieee": "C. Chen, K. Liu, Z. Chen, Y. Gu, Y. Wu, M. Tao, Z. Fu, and J. Ye, “INSIDE: LLMs’ internal states retain the power of hallucination detection,” in *Proc. 12th Int. Conf. Learning Representations (ICLR)*, 2024.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Chen, Chao and Liu, Kai and Chen, Ze and Gu, Yi and Wu, Yue and Tao, Mingyuan and Fu, Zhihang and Ye, Jieping",
+      "title": "{INSIDE}: {LLMs}' Internal States Retain the Power of Hallucination Detection",
+      "booktitle": "Proceedings of the 12th International Conference on Learning Representations (ICLR)",
+      "year": "2024"
+    }
+  },
+  "kossen2024": {
+    "ieee": "J. Kossen, J. Han, M. Razzak, L. Schut, S. Malik, and Y. Gal, “Semantic entropy probes: Robust and cheap hallucination detection in LLMs,” arXiv:2406.15927, 2024.",
+    "bib": {
+      "type": "misc",
+      "author": "Kossen, Jannik and Han, Jiatong and Razzak, Muhammed and Schut, Lisa and Malik, Shreshth and Gal, Yarin",
+      "title": "Semantic Entropy Probes: Robust and Cheap Hallucination Detection in {LLMs}",
+      "howpublished": "arXiv:2406.15927",
+      "year": "2024"
+    }
+  },
+  "lamb2025": {
+    "ieee": "T. A. Lamb, D. Ivanova, P. H. S. Torr, and T. G. J. Rudner, “Semantic-level confidence calibration of language models via temperature scaling,” in *1st Workshop on Quantify Uncertainty and Hallucination in Foundation Models: The Next Frontier in Reliable AI, ICLR*, 2025.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Lamb, Tom A. and Ivanova, Desi and Torr, Philip H. S. and Rudner, Tim G. J.",
+      "title": "Semantic-Level Confidence Calibration of Language Models via Temperature Scaling",
+      "booktitle": "1st Workshop on Quantify Uncertainty and Hallucination in Foundation Models: The Next Frontier in Reliable AI, ICLR",
+      "year": "2025"
+    }
+  },
+  "arad2025": {
+    "ieee": "A. Arad and S. Rosset, “Improving multi-class calibration through normalization-aware isotonic techniques,” in *Proc. 42nd Int. Conf. Machine Learning (ICML)*, PMLR vol. 267, 2025. arXiv:2512.09054.",
+    "bib": {
+      "type": "inproceedings",
+      "author": "Arad, Alon and Rosset, Saharon",
+      "title": "Improving Multi-Class Calibration through Normalization-Aware Isotonic Techniques",
+      "booktitle": "Proceedings of the 42nd International Conference on Machine Learning (ICML)",
+      "series": "PMLR",
+      "volume": "267",
+      "year": "2025",
+      "note": "arXiv:2512.09054"
+    }
+  },
+  "dogah2026": {
+    "ieee": "W. Dogah, “Temperature scaling is not enough: Calibration gaps under human label distributions,” arXiv:2607.13423, Jul. 2026 (preprint).",
+    "bib": {
+      "type": "misc",
+      "author": "Dogah, Wisdom",
+      "title": "Temperature Scaling Is Not Enough: Calibration Gaps Under Human Label Distributions",
+      "howpublished": "arXiv:2607.13423 (preprint)",
+      "year": "2026"
+    }
+  }
+}

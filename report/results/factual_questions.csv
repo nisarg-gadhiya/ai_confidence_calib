@@ -1,0 +1,41 @@
+question_id,question,reference_answer,alias_in_reasoning,answer_confidence,answer_confidence_status,steps,claims,predicted_error_step
+tc_2,Who was the man behind The Chipmunks?,David Seville,0,0.8658696832119944,ok,3,4,3
+tc_33,Which Lloyd Webber musical premiered in the US on 10th December 1993?,Sunset Boulevard,1,0.6266154682854289,ok,2,2,2
+tc_40,Who was the next British Prime Minister after Arthur Balfour?,Campbell-Bannerman,1,0.8318431896722847,ok,3,3,2
+tc_49,Who had a 70s No 1 hit with Kiss You All Over?,Exile,0,0.8203947496054167,ok,3,3,3
+tc_56,What claimed the life of singer Kathleen Ferrier?,Cancer,1,0.6973703281649993,ok,3,3,1
+tc_69,Rita Coolidge sang the title song for which Bond film?,Octopussy,1,0.4920511996162541,ok,2,2,1
+tc_79,What was the last US state to reintroduce alcohol after prohibition?,Utah,0,0.8435321712615776,ok,3,3,2
+tc_106,Which actress was voted Miss Greenwich Village in 1942?,Lauren Bacall,0,0.7013205326257591,ok,3,3,3
+tc_133,What is the Japanese share index called?,Nikkei,1,0.4887338798981412,ok,2,2,1
+tc_137,What was the name of Michael Jackson's autobiography written in 1988?,Moonwalk,0,0.8237123433811595,ok,2,2,1
+tc_149,In which decade did stereo records first go on sale?,1930s,0,0.2689414213699951,ok,3,3,2
+tc_165,In what year's Olympics were electric timing devices and a public-address system used for the first time?,"In 1912, in Stockholm",0,0.7613657945432133,ok,3,3,1
+tc_217,Which volcano in Tanzania is the highest mountain in Africa?,Kilimanjaro,1,0.8942378792584146,ok,3,3,2
+tc_219,The flag of Libya is a plain rectangle of which color?,Green,1,0.8350342714298084,ok,3,3,2
+tc_241,Of which African country is Niamey the capital?,Niger,1,0.8739291954598348,ok,3,3,2
+tc_245,Who was the director of the CIA from 1976-81?,George Bush,0,0.8291271134103799,ok,4,4,4
+tc_261,Which musical featured the song The Street Where You Live?,My Fair Lady,1,0.8525292005266943,ok,3,3,1
+tc_267,"""Who was the target of the failed """"Bomb Plot"""" of 1944?""",Hitler,1,0.5964087817891666,ok,3,3,1
+tc_276,Who had an 80s No 1 hit with Hold On To The Nights?,Richard Marx,1,0.8881517921022618,ok,3,3,1
+tc_280,Who directed the classic 30s western Stagecoach?,John Ford,1,0.8740059771748231,ok,3,3,2
+tc_282,Dave Gilmore and Roger Waters were in which rock group?,Pink Floyd,1,0.4887338798981412,ok,2,2,1
+tc_288,Which highway was Revisited in a classic 60s album by Bob Dylan?,61,1,0.4887338798981412,ok,2,2,2
+tc_298,Which was the only eastern bloc country to participate in the 1984 LA Olympics?,Rumania,1,0.8656694488518158,ok,4,4,1
+tc_304,Which 90s sci fi series with James Belushi was based on Bruce Wagner's comic strip of the same name?,Wild Palms,0,0.5268441063395551,ok,3,3,2
+tc_316,If I Were A Rich Man Was a big hit from which stage show?,Fiddler on the Roof,1,0.8424106925747604,ok,2,2,1
+tc_349,Men Against the Sea and Pitcairn's Island were two sequels to what famous novel?,Mutiny On The Bounty,1,0.5964087817891666,ok,3,3,1
+tc_379,What was Truman Capote's last name before he was adopted by his stepfather?,Persons,1,0.8209624069896485,ok,3,3,3
+tc_397,"In Lewis Carroll's poem The Hunting of the Snark, what did the elusive, troublesome snark turn into to fool hunters?",A boojum,1,0.2689414213699951,ok,3,3,1
+tc_453,"In the Bible, who did the sun and moon stand still before?",Joshua,1,0.8364970414317919,ok,4,4,2
+tc_455,What Michelle Pfeiffer movie got a boost from the Coolio song Gangsta's Paradise?,Dangerous Minds,1,0.2689414213699951,ok,2,2,1
+tc_510,What was President Gerald Ford's middle name?,Rudolph,1,0.7733147739612809,ok,3,3,3
+tc_515,Art Garfunkel trained for which profession although he didn't qualify?,Architect,0,0.46750891052058663,ok,3,3,3
+tc_517,Who was the last inmate of Spandau jail in Berlin?,Rudolf Hess,1,0.8941801923703836,ok,3,3,2
+tc_518,What was Eddie Murphy's first movie?,48 Hours,0,0.7631728682173723,ok,3,3,2
+tc_538,In the 80s who wrote the novel Empire of The Sun?,J. G. Ballard,1,0.2689414213699951,ok,3,3,1
+tc_540,Kagoshima international airport is in which country?,Japan,1,0.39848002320834314,ok,3,3,1
+tc_543,In which sport could the Pacers take on the Pistons?,A: Basketball,1,0.4887338798981412,ok,5,6,2
+tc_559,Kim Carnes' nine weeks at No 1 with Bette Davis Eyes was interrupted for one week by which song?,Stars on 45 medley,0,0.6570019565929133,ok,3,3,3
+tc_561,Where in Canada is the Lion's Gate bridge?,Vancouver,1,0.7817239261201088,ok,2,2,1
+tc_564,What was Walter Matthau's first movie?,The Kentuckian,1,0.662034754298568,ok,3,3,3

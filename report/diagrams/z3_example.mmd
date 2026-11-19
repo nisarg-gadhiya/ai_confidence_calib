@@ -1,0 +1,16 @@
+flowchart TD
+    subgraph Premises["Premises (excerpt)"]
+        P5["p5: Anne is red<br/>red(anne)"]
+        P3["p3: Anne is furry<br/>furry(anne)"]
+    end
+    subgraph Rules
+        R18["r18: All red things are round<br/>∀x. red(x) → round(x)"]
+        R14["r14: All furry things are round<br/>∀x. furry(x) → round(x)"]
+    end
+    Q["Query: Is Anne round?<br/>claim = round(anne)"] --> N["Assert ¬round(anne)<br/>with tracking label"]
+    P5 & P3 & R18 & R14 --> S["Z3 Solver.check()"]
+    N --> S
+    S -->|unsat| ENT["ENTAILED<br/>unsat core → premises_used, rules_used"]
+    S -->|sat| T2["Assert round(anne)"]
+    T2 -->|unsat| CON["CONTRADICTED"]
+    T2 -->|sat| UNK["UNKNOWN (open world)"]

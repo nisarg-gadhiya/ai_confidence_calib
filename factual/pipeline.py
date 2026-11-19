@@ -8,7 +8,10 @@ from factual.calibration.calibrator import calibrate_probability
 from factual.decomposition.claim_extractor import extract_claims
 from factual.decomposition.step_decomposer import decompose_reasoning
 from factual.evaluation.localization import localize_riskiest_step
-from factual.generation.reasoning import generate_reasoning_steps, get_factual_llm_service
+from factual.generation.reasoning import (
+    generate_factual_response,
+    get_factual_llm_service,
+)
 from factual.retrieval.evidence_retrieval import retrieve_evidence_for_claim
 from factual.retrieval.reliability_filter import filter_sources
 from factual.retrieval.source_reliability import estimate_source_reliability
@@ -19,18 +22,51 @@ from factual.signals.evidence_score import aggregate_evidence_score
 logger = logging.getLogger(__name__)
 
 
+def _build_final_answer(
+    claims: list[dict],
+    proposed_answer: str | None = None,
+) -> tuple[str, str]:
+    essential_claims = [claim for claim in claims if claim["essential"]]
+    if essential_claims and essential_claims[-1]["verification"]["verdict"] == "SUPPORT":
+        supported_claims = [
+            claim["text"]
+            for claim in essential_claims
+            if claim["verification"]["verdict"] == "SUPPORT"
+        ]
+        if supported_claims:
+            return " ".join(dict.fromkeys(supported_claims)), "verified"
+
+    if proposed_answer and proposed_answer.strip():
+        return proposed_answer.strip(), "unverified_model_answer"
+    return "The answer could not be verified from the available evidence.", "unverified"
+
+
 def process_factual(question: str):
     """Run the factual-question pipeline on the original question."""
     if not isinstance(question, str) or not question.strip():
         raise ValueError("Question must be a non-empty string.")
 
-    reasoning_steps = generate_reasoning_steps(question)
-    decomposed_steps = decompose_reasoning(reasoning_steps)
+    generated = generate_factual_response(question)
+    decomposed_steps = decompose_reasoning(generated.reasoning_steps)
+    answer_step_id = None
+    if generated.final_answer:
+        answer_step_id = max(
+            (step["step_id"] for step in decomposed_steps),
+            default=0,
+        ) + 1
+        decomposed_steps.append(
+            {
+                "step_id": answer_step_id,
+                "text": generated.final_answer,
+            }
+        )
     llm = get_factual_llm_service()
 
     step_results = []
-    flat_claims = []
+    all_claims = []
+    answer_claims = []
     for step in decomposed_steps:
+        is_answer_step = step["step_id"] == answer_step_id
         claims = extract_claims([step])
         claim_results = []
         for claim in claims:
@@ -93,7 +129,7 @@ def process_factual(question: str):
                 fused_confidence=fused_confidence,
             )
 
-            essential = assessment["essential"]
+            essential = is_answer_step or assessment["essential"]
             support_weight = sum(
                 item["source_reliability"] * item["relevance_score"]
                 for item in support_evidence
@@ -134,7 +170,9 @@ def process_factual(question: str):
                     for item in evidence
                 ],
             }
-            flat_claims.append(claim_record)
+            all_claims.append(claim_record)
+            if is_answer_step:
+                answer_claims.append(claim_record)
             claim_results.append(claim_record)
 
         step_results.append(
@@ -160,9 +198,14 @@ def process_factual(question: str):
         [{"step_id": step_id, "calibrated_probability": probability} for step_id, probability in step_probabilities.items()]
     )
 
-    answer_confidence_status = "ok"
+    final_answer, answer_source = _build_final_answer(
+        answer_claims,
+        generated.final_answer,
+    )
+    answer_confidence_status = answer_source
     try:
-        answer_confidence = calculate_answer_confidence(flat_claims)
+        confidence_claims = answer_claims or all_claims
+        answer_confidence = calculate_answer_confidence(confidence_claims)
     except ValueError:
         answer_confidence = None
         answer_confidence_status = "invalid_essential_probability"
@@ -171,6 +214,7 @@ def process_factual(question: str):
 
     return {
         "question": question,
+        "final_answer": final_answer,
         "steps": step_results,
         "predicted_error_step": predicted_error_step,
         "answer_confidence": answer_confidence,

@@ -1,0 +1,15 @@
+flowchart TD
+    Q["Question with premises"] --> P["Extract premises p1..pn<br/>and target statement"]
+    P --> RX["Rule extraction<br/>variables, generic plurals, conjunctions"]
+    RX --> Z["Z3 encoding<br/>entities, predicates, ∀-rules"]
+    Z --> INC{"Premises satisfiable?"}
+    INC -- no --> IR["Inconsistent result<br/>unsat core → premises / rules"]
+    INC -- yes --> CK["check_claim(target)<br/>ENTAILED / CONTRADICTED / UNKNOWN"]
+    RX --> FC["Forward-chaining rule engine<br/>derivations with parent facts"]
+    FC --> PP["Proof-path step selection"]
+    CK & PP --> STP{"For each proof step"}
+    STP --> SV["LLM: K next-step samples + p_true<br/>semantic clusters → consistency"]
+    STP --> LV["Logical validity from solver checks"]
+    SV & LV --> FU["Fuse 0.4 / 0.3 / 0.3 → σ(−1 + 3.2f)"]
+    FU --> STP
+    STP -- done --> AGG["Answer confidence = geometric mean<br/>of essential claims; flagged = argmin"]

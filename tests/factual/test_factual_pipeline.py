@@ -1,11 +1,14 @@
+from types import SimpleNamespace
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 from factual.answer_confidence import calculate_answer_confidence
+from factual.generation.reasoning import FactualGeneration, generate_factual_response
 from factual.pipeline import process_factual
 from factual.decomposition.claim_extractor import extract_claims
-from factual.retrieval.source_reliability import estimate_source_reliability
+from factual.retrieval.source_reliability import classify_source, estimate_source_reliability
 from factual.retrieval.reliability_filter import filter_sources
 from factual.retrieval.source_search import search_sources
 from factual.verification.claim_evidence import verify_claim_against_evidence
@@ -55,6 +58,49 @@ def test_source_reliability_estimation_uses_configured_policy():
 
     assert 0.0 <= score <= 1.0
     assert score > 0.5
+
+
+@pytest.mark.parametrize(
+    ("domain", "source_type", "expected_status"),
+    [
+        ("astrobiology.nasa.gov", "general", "KEEP"),
+        ("mext.go.jp", "general", "KEEP"),
+        ("www.ox.ac.uk", "general", "KEEP"),
+        ("news.bbc.co.uk", "general", "KEEP"),
+        ("en.wikipedia.org", "general", "KEEP"),
+        ("developer.nvidia.com", "general", "KEEP"),
+        ("world-capitals.org", "general", "DOWN_WEIGHT"),
+        ("medium.com", "general", "DOWN_WEIGHT"),
+        ("reddit.com", "general", "REJECT"),
+        ("youtube.com", "general", "REJECT"),
+    ],
+)
+def test_source_reliability_tiers_land_in_expected_bands(domain, source_type, expected_status):
+    [filtered] = filter_sources([{"source_id": "s", "domain": domain, "source_type": source_type}])
+
+    assert filtered["status"] == expected_status
+
+
+def test_source_reliability_matches_domains_on_dot_boundaries():
+    assert classify_source({"domain": "news.bbc.co.uk"})[0] == "wire_news"
+    assert classify_source({"domain": "notbbc.co.uk"})[0] == "general"
+    # "ent" / "gov" substrings must not grant official status.
+    assert estimate_source_reliability({"domain": "entertainment.com"}) < 0.75
+    assert estimate_source_reliability({"domain": "lovegov.com"}) < 0.75
+
+
+def test_source_reliability_ranks_tiers_in_order():
+    scores = [
+        estimate_source_reliability({"domain": domain})
+        for domain in ["nasa.gov", "nature.com", "britannica.com", "reuters.com", "cnn.com", "example.com", "medium.com", "reddit.com"]
+    ]
+
+    assert scores == sorted(scores, reverse=True)
+    assert len(set(scores)) == len(scores)
+
+
+def test_blog_source_type_caps_reliability_on_trusted_hosts():
+    assert estimate_source_reliability({"domain": "en.wikipedia.org", "source_type": "blog"}) == 0.48
 
 
 def test_reliability_filter_keeps_downweights_and_rejects():
@@ -140,6 +186,9 @@ def test_factual_pipeline_processes_question_without_mutating_input(monkeypatch)
     result = process_factual(question)
 
     assert result["question"] == question
+    assert result["final_answer"] == (
+        "The answer could not be verified from the available evidence."
+    )
     assert "steps" in result
     assert isinstance(result["steps"], list)
     assert result["steps"]
@@ -148,11 +197,84 @@ def test_factual_pipeline_processes_question_without_mutating_input(monkeypatch)
 def _stub_factual_runtime(monkeypatch, factual_pipeline):
     monkeypatch.setattr(
         factual_pipeline,
-        "generate_reasoning_steps",
-        lambda _question: ["Canberra is the capital of Australia."],
+        "generate_factual_response",
+        lambda _question: FactualGeneration(
+            ["Canberra is the capital of Australia."],
+            None,
+        ),
     )
     monkeypatch.setattr(factual_pipeline, "get_factual_llm_service", lambda: None)
     monkeypatch.setattr(factual_pipeline, "search_sources", lambda *_args: [])
+
+
+def test_factual_answer_uses_supported_final_claim_after_unknown_intermediate():
+    import factual.pipeline as factual_pipeline
+
+    claims = [
+        {
+            "essential": True,
+            "text": "Determine who succeeded Arthur Balfour.",
+            "verification": {"verdict": "UNKNOWN"},
+        },
+        {
+            "essential": True,
+            "text": "Henry Campbell-Bannerman succeeded Arthur Balfour.",
+            "verification": {"verdict": "SUPPORT"},
+        },
+        {
+            "essential": True,
+            "text": "He served as Prime Minister from 1905 to 1908.",
+            "verification": {"verdict": "SUPPORT"},
+        },
+    ]
+
+    assert factual_pipeline._build_final_answer(claims) == (
+        "Henry Campbell-Bannerman succeeded Arthur Balfour. "
+        "He served as Prime Minister from 1905 to 1908.",
+        "verified",
+    )
+
+
+def test_factual_answer_is_withheld_when_final_claim_is_not_supported():
+    import factual.pipeline as factual_pipeline
+
+    claims = [
+        {
+            "essential": True,
+            "text": "Paris is the capital of France.",
+            "verification": {"verdict": "SUPPORT"},
+        },
+        {
+            "essential": True,
+            "text": "The answer is unknown.",
+            "verification": {"verdict": "UNKNOWN"},
+        },
+    ]
+
+    assert factual_pipeline._build_final_answer(claims) == (
+        "The answer could not be verified from the available evidence.",
+        "unverified",
+    )
+
+
+def test_generate_factual_response_preserves_model_final_answer(monkeypatch):
+    class FakeFactualLLM:
+        def generate_factual_reasoning(self, question):
+            assert question == "What is the capital of India?"
+            return SimpleNamespace(
+                steps=[SimpleNamespace(text="India is a country.")],
+                final_answer="New Delhi is the capital of India.",
+            )
+
+    monkeypatch.setattr(
+        "factual.generation.reasoning.get_factual_llm_service",
+        lambda: FakeFactualLLM(),
+    )
+
+    generated = generate_factual_response("What is the capital of India?")
+
+    assert generated.reasoning_steps == ["India is a country."]
+    assert generated.final_answer == "New Delhi is the capital of India."
 
 
 def test_source_search_maps_live_citations_to_source_records(monkeypatch):
@@ -274,8 +396,11 @@ def test_factual_pipeline_logs_retrieval_stage_counts(monkeypatch, caplog):
 
     monkeypatch.setattr(
         factual_pipeline,
-        "generate_reasoning_steps",
-        lambda _question: ["Paris is the capital of France."],
+        "generate_factual_response",
+        lambda _question: FactualGeneration(
+            ["Paris is the capital of France."],
+            None,
+        ),
     )
     monkeypatch.setattr(factual_pipeline, "get_factual_llm_service", lambda: None)
     monkeypatch.setattr(factual_pipeline, "search_sources", lambda *_args: [])
@@ -318,8 +443,11 @@ def test_factual_pipeline_uses_independent_source_verdicts(monkeypatch):
     ]
     monkeypatch.setattr(
         factual_pipeline,
-        "generate_reasoning_steps",
-        lambda _question: ["Canberra is the capital of Australia."],
+        "generate_factual_response",
+        lambda _question: FactualGeneration(
+            ["Canberra is the capital of Australia."],
+            "Canberra is the capital of Australia.",
+        ),
     )
     monkeypatch.setattr(factual_pipeline, "get_factual_llm_service", lambda: FakeVerifier())
     monkeypatch.setattr(factual_pipeline, "search_sources", lambda *_args: sources)
@@ -336,7 +464,90 @@ def test_factual_pipeline_uses_independent_source_verdicts(monkeypatch):
         "https://example.gov.au/source_b",
     ]
     assert result["answer_confidence"] is not None
+    assert result["final_answer"] == "Canberra is the capital of Australia."
     assert result["calibration_status"] == "fixed_sigmoid_not_empirically_calibrated"
+
+
+def test_factual_pipeline_answers_from_verified_conclusion_not_reasoning_plan(monkeypatch):
+    import factual.pipeline as factual_pipeline
+
+    question = "What is the capital of India?"
+    source = {
+        "source_id": "s1",
+        "title": "India capital",
+        "url": "https://example.gov.in/capital",
+        "domain": "example.gov.in",
+        "source_type": "government",
+        "text": "The capital of India is New Delhi.",
+        "text_origin": "fetched_webpage_content",
+        "retrieval_score": 1.0,
+    }
+    evidence = {
+        "source_id": "s1",
+        "title": "India capital",
+        "url": source["url"],
+        "domain": source["domain"],
+        "text": source["text"],
+        "text_origin": source["text_origin"],
+        "reliability_method": "domain_type_policy",
+        "source_reliability": 0.9,
+        "relevance_score": 1.0,
+        "status": "KEEP",
+    }
+
+    class FakeVerifier:
+        def assess_factual_claim(self, _question, _claim_text, _evidence):
+            return {
+                "confidence": 0.9,
+                "essential": False,
+                "source_assessments": [{"source_id": "s1", "verdict": "SUPPORT"}],
+            }
+
+    monkeypatch.setattr(
+        factual_pipeline,
+        "generate_factual_response",
+        lambda _question: FactualGeneration(
+            ["Identify the country in question.", "Recall its capital city."],
+            "New Delhi is the capital of India.",
+        ),
+    )
+    monkeypatch.setattr(factual_pipeline, "get_factual_llm_service", lambda: FakeVerifier())
+    monkeypatch.setattr(factual_pipeline, "search_sources", lambda *_args: [source])
+    monkeypatch.setattr(
+        factual_pipeline,
+        "retrieve_evidence_for_claim",
+        lambda *_args: [evidence],
+    )
+
+    result = process_factual(question)
+
+    assert result["final_answer"] == "New Delhi is the capital of India."
+    assert result["steps"][-1]["text"] == "New Delhi is the capital of India."
+    assert result["steps"][-1]["claims"][0]["essential"] is True
+    assert result["steps"][-1]["claims"][0]["verification"]["verdict"] == "SUPPORT"
+
+
+def test_factual_pipeline_preserves_unverified_model_answer(monkeypatch):
+    import factual.pipeline as factual_pipeline
+
+    monkeypatch.setattr(
+        factual_pipeline,
+        "generate_factual_response",
+        lambda _question: FactualGeneration(
+            ["Dangerous Minds is the movie in question."],
+            "Dangerous Minds.",
+        ),
+    )
+    monkeypatch.setattr(factual_pipeline, "get_factual_llm_service", lambda: None)
+    monkeypatch.setattr(factual_pipeline, "search_sources", lambda *_args: [])
+
+    result = process_factual(
+        "What Michelle Pfeiffer movie got a boost from the Coolio song Gangsta's Paradise?"
+    )
+
+    assert result["final_answer"] == "Dangerous Minds."
+    assert result["answer_confidence_status"] == "unverified_model_answer"
+    assert result["answer_confidence"] is not None
 
 
 def test_calculate_answer_confidence_uses_geometric_mean_for_essential_claims():

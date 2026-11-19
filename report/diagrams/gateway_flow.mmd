@@ -1,0 +1,11 @@
+flowchart TD
+    Q["Incoming question"] --> V{"Non-empty string?"}
+    V -- no --> E400["HTTP 400"]
+    V -- yes --> C["LLM classifier<br/>structured output, temperature 0<br/>category ∈ {arithmetic, logical, factual}"]
+    C --> D{"category"}
+    D -- arithmetic --> A["run_inference()<br/>backend/app/api/routes/inference.py"]
+    D -- factual --> F["process_factual()<br/>factual/pipeline.py"]
+    D -- logical --> L["process_logical()<br/>logical/pipeline.py"]
+    D -- other --> E["ValueError → HTTP 400"]
+    A & F & L --> S["save_calibration_run()"]
+    S --> R["Response to client"]

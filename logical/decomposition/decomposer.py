@@ -4,6 +4,27 @@ from logical.rules.extractor import Atom, Rule
 from logical.rules.rule_engine import RuleEngineResult
 
 
+def _proof_derivations(engine_result: RuleEngineResult, target: Atom | None) -> list:
+    """Derivations on the proof path of the target (or of its negation).
+
+    Forward chaining derives every consequence of the premises; only the ones
+    the answer actually depends on are reasoning steps. Without a target, or
+    when neither the target nor its negation was derived, nothing is pruned
+    beyond what the target needs.
+    """
+    if target is None:
+        return list(engine_result.derivations)
+    needed: set = set()
+    stack = [key for key in (target.key, target.opposite().key) if key in engine_result.facts]
+    while stack:
+        key = stack.pop()
+        if key in needed or key not in engine_result.facts:
+            continue
+        needed.add(key)
+        stack.extend(engine_result.facts[key].parent_keys)
+    return [item for item in engine_result.derivations if item.atom.key in needed]
+
+
 def build_reasoning_steps(
     engine_result: RuleEngineResult,
     target: Atom | None,
@@ -11,7 +32,7 @@ def build_reasoning_steps(
     rules: list[Rule],
 ) -> list[dict]:
     steps: list[dict] = []
-    for derivation in engine_result.derivations:
+    for derivation in _proof_derivations(engine_result, target):
         steps.append(
             {
                 "step_id": len(steps) + 1,

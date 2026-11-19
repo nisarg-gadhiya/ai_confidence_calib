@@ -1,0 +1,33 @@
+classDiagram
+    class CalibrationRun {
+        run_id : UUID
+        created_at : ISO-8601 UTC
+        category : arithmetic | factual | logical
+        question : str
+        answer : str
+        confidence : float
+        calibration_status : str
+        pipeline_output : object
+        steps : CalibrationStep[]
+    }
+    class CalibrationStep {
+        step_id : int
+        claim_id : str
+        text : str
+        step_type or reasoning_operation : str
+        verification_score : float
+        consistency_score : float
+        fused_confidence or calibrated_probability : float
+        verification_verdict : str
+        evidence_score or logical_validity_score : float
+        sources : Source[]
+        sample_count : int
+    }
+    class Source {
+        source_id : str
+        title : str
+        url : str
+        domain : str
+    }
+    CalibrationRun "1" *-- "1..*" CalibrationStep
+    CalibrationStep "1" *-- "0..*" Source

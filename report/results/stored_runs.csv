@@ -1,0 +1,30 @@
+run_id,created_at,category,confidence,steps,question
+beb1c668-30d4-4298-a4f7-ac5f40d949c3,2026-11-19T15:28:24.542732+00:00,arithmetic,0.6532919953809194,4,what is derivative of 3x^2
+c05bbe07-64c2-432b-9ea5-7a3c4f9f2d18,2026-11-19T15:29:37.519574+00:00,factual,0.7042812477924656,6,what is the difference between LSTM and GRU?
+f334c763-f1a2-4d33-834e-2d2fc0a8f030,2026-11-19T15:30:42.974700+00:00,factual,0.711459098656687,7,what is the difference between LSTM and GRU?
+62b9ad97-8a08-4b9a-b1ab-81b0487c8bec,2026-11-19T15:32:01.532830+00:00,factual,0.8505691429174715,8,what is the difference between LSTM and GRU??
+5449e76e-8302-48f5-b060-5e2458f68e15,2026-11-19T15:32:39.985077+00:00,factual,0.8318431896722847,3,"""Who was the next British Prime Minister after Arthur Balfour?"""
+f95eef97-2553-47a0-94de-ee52582b27e3,2026-11-19T15:32:44.257062+00:00,factual,0.8281002190110396,3,Who was the next British Prime Minister after Arthur Balfour?
+571973e8-ac45-46a9-8415-6542973a712d,2026-11-19T15:47:21.848771+00:00,factual,0.8911608947412927,4,what is LSTM?
+0cdd74a6-ae7a-4373-abb8-8d71f0f54847,2026-11-19T15:48:27.919546+00:00,factual,0.8874289294531358,2,What is the capital of India?
+67151fd7-1a1b-49b2-b946-1d19f8af964d,2026-11-19T15:50:17.160600+00:00,factual,0.8876698182753447,3,what is the capital of India?
+9b92c1ad-029b-4ebf-9511-9f9f517917ee,2026-11-19T15:54:55.448356+00:00,factual,0.8916820404803397,3,What is the capital of France?
+5f734b0d-808e-427b-bd5b-b28f61bd5539,2026-11-19T16:10:55.106510+00:00,factual,0.9002495108803148,2,what is the capital of India?
+1168ed08-3a73-4576-87ad-9e3c33a34924,2026-11-19T16:12:51.377739+00:00,factual,0.8881517921022618,4,What was the last US state to reintroduce alcohol after prohibition?
+1f2d5e61-f62e-4c2d-8c66-801394f5138f,2026-11-19T16:14:54.287439+00:00,factual,0.2689414213699951,3,What Michelle Pfeiffer movie got a boost from the Coolio song Gangsta's Paradise?
+deb8f4a7-81e3-4ead-8f38-34cc9634e93c,2026-11-19T16:19:11.089707+00:00,factual,0.8881517921022618,2,Who is commonly credited with introducing movable-type printing to Europe in the 15th century?
+4c9b57d1-ea31-4a40-9e90-322ed9b8d965,2026-11-19T16:19:57.108634+00:00,factual,0.8881517921022618,3,"Which mission first landed humans on the Moon, and who was the first person to walk on its surface?"
+af32baac-a79c-4445-a262-77130955a97f,2026-11-19T16:21:28.805682+00:00,factual,0.9002495108803148,3,"Which mission first landed humans on the Moon, and who was the first person to walk on its surface??"
+b2d92c16-9e6d-4299-8a17-d96b7ff86d9f,2026-11-19T16:24:03.076522+00:00,logical,0.5537910229492019,1,Anne is big. Anne is cold. Anne is furry. Anne is green. Anne is red. Anne is rough. Erin is cold. Erin is furry. Erin i
+75973f95-b3bd-486b-be4c-38b08411d3a5,2026-11-19T16:25:08.478218+00:00,logical,0.6006082195512745,1,Anne is big. Anne is cold. Anne is furry. Anne is green. Anne is red. Anne is rough. Erin is cold. Erin is furry. Erin i
+2975bc62-fa21-4cbb-8aa0-29f14d367b5d,2026-11-19T16:47:19.286919+00:00,factual,0.9002495108803148,2,what is the capital of India?
+3500f932-35b8-43af-bafa-fb3666b4576b,2026-11-19T16:52:14.169924+00:00,arithmetic,0.7299572525862709,4,what is the derivative of 3x^2?
+bb746c87-0404-4e0f-869a-1d6430da470b,2026-11-19T16:53:58.728533+00:00,arithmetic,0.6271325669853434,6,"Every day, Wendi feeds each of her chickens three cups of mixed chicken feed, containing seeds, mealworms and vegetables"
+65a3b51b-0009-4b2b-bfdd-adbd08664e2a,2026-11-19T16:55:31.901047+00:00,logical,0.3506917347288658,1,"Bob is kind. Bob is not rough. Harry is rough. All quiet, rough people are kind. If someone is not red then they are not"
+aa3adfd3-f7e5-4913-bc12-442fcd404780,2026-11-19T16:56:45.299749+00:00,logical,0.3083168472451772,1,Anne is big. Anne is cold. Anne is furry. Anne is green. Anne is red. Anne is rough. Erin is cold. Erin is furry. Erin i
+022ab4f7-5fbe-4727-8d03-9803805fbbb8,2026-11-19T16:58:01.127821+00:00,logical,0.6006082195512745,1,Anne is big. Anne is cold. Anne is furry. Anne is green. Anne is red. Anne is rough. Erin is cold. Erin is furry. Erin i
+b2013532-008c-410c-a5e9-32536a5c4bf4,2026-11-19T17:06:46.638367+00:00,logical,0.6006082195512745,1,Anne is big. Anne is cold. Anne is furry. Anne is green. Anne is red. Anne is rough. Erin is cold. Erin is furry. Erin i
+49cb0aa0-be72-4138-b7d1-7c1fe7dd24e7,2026-11-19T17:07:00.222981+00:00,logical,0.7525017852138598,1,"If all mammals are animals and a whale is a mammal, is a whale an animal?"
+6d1cc1ab-e0e4-40e6-a1bd-e41c5ea6a26b,2026-11-19T17:07:32.788510+00:00,arithmetic,0.6234031451929947,5,What is the derivative of 3x^2 + 5x?
+069f448f-10ab-4a0c-b419-d328f99d9c13,2026-11-19T17:09:02.505924+00:00,factual,0.8881517921022618,6,What is the difference between LSTM and GRU?
+ab94b91d-cfe0-41ab-a52c-a031e9a012d1,2026-11-19T17:24:05.044939+00:00,logical,0.8816344711799424,3,All pilots are crew members. If someone is a crew member and someone is a safety officer then someone is an emergency co
