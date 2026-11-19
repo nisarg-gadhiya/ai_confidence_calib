@@ -91,6 +91,6 @@ Table: Work packages and allocation. {#tab:ps-allocation}
 
 ## Schedule {#sec:ps-schedule}
 
-@fig:gantt shows the schedule. Completed phases are bounded by dated evidence: the proposal document is dated 18 August 2026, and the repository's commits mark the base project (27 September), the factual pipeline and gateway (3 October), the logical pipeline (4 October) and the pilot runs (19 November); the dashboard, the reliability policy revision and the parser fix were made on 19 November and are not yet committed. The start of the first phase is indicative. Phases after the report date are planned and indicative; they follow the priorities in Chapter 17.
+@fig:gantt shows the schedule. Completed phases are bounded by dated evidence: the proposal document is dated 18 August 2026, and the repository's commits mark the base project (27 September), the factual pipeline and gateway (3 October), the logical pipeline (4 October) and the pilot runs (19 November); the dashboard, the reliability policy revision and the parser fix were made on 19 November and are not yet committed. The start of the first phase is indicative. Phases after the report date are planned and indicative; they follow the future scope set out in Chapter 17.
 
 ![Project schedule for A.Y. 2026–2027. Solid bars are completed phases with dated evidence; hatched bars are planned.](gantt.png){#fig:gantt}

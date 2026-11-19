@@ -90,7 +90,7 @@ The three signals are fused and calibrated with the same weights and sigmoid as 
 
 ### What the confidence means
 
-The answer confidence of a logical question is, by construction, the calibrated probability of the *target claim*, scored partly by whether the solver entails that claim. When the correct answer is "No" (a CONTRADICTED target) or "cannot be determined" (UNKNOWN), the target claim is not entailed, its validity is 0, and the confidence is low even though the answer may be exactly right. The confidence therefore measures belief that the queried statement holds, not belief that the system's answer is correct. This distinction is the main reason why answer confidence and correctness are poorly aligned in the logical pilot, and Chapter 14 quantifies it. Aligning the two, for example by scoring the claim that the *answer* expresses (the negated target for "No"), is listed as future work.
+The answer confidence of a logical question is, by construction, the calibrated probability of the *target claim*, scored partly by whether the solver entails that claim. When the correct answer is "No" (a CONTRADICTED target) or "cannot be determined" (UNKNOWN), the target claim is not entailed, its validity is 0, and the confidence is low even though the answer may be exactly right. The confidence therefore measures belief that the queried statement holds, not belief that the system's answer is correct. This distinction is the main reason why answer confidence and correctness are poorly aligned in the logical pilot, and Chapter 14 quantifies it. Aligning the two, for example by scoring the claim that the *answer* expresses (the negated target for "No"), is a natural refinement of the pipeline.
 
 ## Worked Example {#sec:logical-example}
 

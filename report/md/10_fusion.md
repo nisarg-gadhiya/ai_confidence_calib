@@ -72,7 +72,7 @@ The proposal defined two metrics for localisation, implemented in `arithmetic/ev
 
 $$\mathrm{Top}\text{-}k = \frac{1}{N}\sum_{n=1}^{N} \mathbb{1}\left[e_n \in \text{the } k \text{ lowest-confidence steps of case } n\right], \quad k \in \{1, 2\}$$ {#eq:topk}
 
-Top-2 is reported because an error often lowers the confidence of the step immediately after it as well as its own. The baseline that a localiser must beat is uniform attribution, whose expected Top-1 accuracy is $1/n$ for a chain of $n$ steps. Two features of the current design limit what the arg-min rule can do: it always flags exactly one step, even in a chain where every step is correct, and with a single-step chain it always flags that step. A threshold (flag only steps below a confidence level) would allow "no error"; it is listed as future work.
+Top-2 is reported because an error often lowers the confidence of the step immediately after it as well as its own. The baseline that a localiser must beat is uniform attribution, whose expected Top-1 accuracy is $1/n$ for a chain of $n$ steps. Two features of the current design limit what the arg-min rule can do: it always flags exactly one step, even in a chain where every step is correct, and with a single-step chain it always flags that step. A threshold (flag only steps below a confidence level) would allow "no error"; it is part of the future scope (Chapter 17).
 
 ## Measuring Calibration {#sec:fusion-metrics}
 
@@ -101,4 +101,4 @@ Table: Numeric choices in the scoring and their status. {#tab:handset}
 | Sampling | K = 5, T = 0.8 | request / `llm_service.py` | Chosen for cost; K configurable 1–10 |
 | XGBoost hyperparameters | @tab:xgb-params | `xgboost_model.py` | Fixed; model not yet trained |
 
-The next step for the project (Chapter 17) is to replace the rows marked "hand-set" with values fitted to labelled steps: train the XGBoost calibrator for arithmetic, and fit the sigmoid (and, with enough data, the fusion weights) for factual and logical claims by minimising NLL.
+Part of the project's future scope (Chapter 17) is to replace the rows marked "hand-set" with values fitted to labelled steps: train the XGBoost calibrator for arithmetic, and fit the sigmoid (and, with enough data, the fusion weights) for factual and logical claims by minimising NLL.

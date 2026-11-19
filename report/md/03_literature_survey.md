@@ -180,7 +180,7 @@ This chapter reviews the published work closest to the project's question, paper
 
 **Gap / Limitation:** The method requires access to hidden states, which hosted APIs do not expose, and it scores whole responses.
 
-**Relevance:** The original project design included a hidden-state signal per step inspired by this family of methods. Because Calibra uses a hosted model, latent signals could not be implemented; this remains future work with a locally hosted model (Chapter 17).
+**Relevance:** The original project design included a hidden-state signal per step inspired by this family of methods. Because Calibra uses a hosted model, latent signals could not be implemented; this is part of the project's future scope with a locally hosted model (Chapter 17).
 
 ## Paper 11: Let's Verify Step by Step
 

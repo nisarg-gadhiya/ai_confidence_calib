@@ -39,7 +39,7 @@ FIG = REPORT / "figures"
 OUT_DOCX = REPORT / "Calibra_Final_Report.docx"
 OUT_PDF = REPORT / "Calibra_Final_Report.pdf"
 EQ_DIR = REPORT / "build" / "equations"
-SOFFICE = Path("C:/Program Files/LibreOffice/program/soffice.com")
+SOFFICE = Path(__import__("os").environ.get("SOFFICE", "C:/Program Files/LibreOffice/program/soffice.com"))
 
 TITLE = "Calibra: Step-Level Confidence Calibration for LLM Reasoning"
 RUNNING = "Calibra: Step-Level Confidence Calibration for LLM Reasoning"
@@ -53,7 +53,7 @@ MAX_FIG_H_CM = 19.0
 STUDENTS = [
     ("Aarya Pandey", "231071003"),
     ("Khushbu Chaudhari", "231081018"),
-    ("Diksha Dhanmane", "231081020"),
+    ("Diksha Dhanmane", "231081021"),
     ("Nisarg Gadhiya", "231080022"),
 ]
 GUIDE = "Prof. Sopan Kolte"
@@ -585,7 +585,17 @@ class Builder:
         return p
 
     def page_break(self):
-        self.doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+        # A 1 pt paragraph carries the break, so a chapter that exactly fills its last page
+        # does not push a full-height empty line onto a new page (which left blank pages).
+        p = self.doc.add_paragraph()
+        pf = p.paragraph_format
+        pf.space_before = Pt(0)
+        pf.space_after = Pt(0)
+        pf.line_spacing_rule = WD_LINE_SPACING.EXACTLY
+        pf.line_spacing = Pt(1)
+        run = p.add_run()
+        run.font.size = Pt(1)
+        run.add_break(WD_BREAK.PAGE)
 
     def centered(self, text, size=12, bold=False, after=4, italic=False):
         return self.para(text, align=WD_ALIGN_PARAGRAPH.CENTER, size=size, bold=bold, italic=italic, space_after=after, inline=False)
@@ -838,8 +848,9 @@ class Builder:
         for unit in self.units:
             if unit.kind == "front":
                 continue
-            if not first:
-                self.page_break()
+            # chapters start on a new page via "page break before" on their first line,
+            # which (unlike a break paragraph) never leaves a blank page behind
+            self._break_next = not first
             first = False
             self.unit(unit)
 
@@ -858,6 +869,9 @@ class Builder:
         h.add_run(unit.title)
         if not label:
             h.paragraph_format.space_before = Pt(36)
+        if getattr(self, "_break_next", False):
+            (p if label else h).paragraph_format.page_break_before = True
+            self._break_next = False
         self.blocks(unit.blocks, unit)
 
     def blocks(self, blocks, unit):
@@ -1041,12 +1055,11 @@ class Builder:
         chapters = [u for u in self.units if u.kind == "chapter"]
         appendices = [u for u in self.units if u.kind == "appendix"]
         for idx, unit in enumerate(chapters):
-            if idx:
-                self.page_break()
+            self._break_next = bool(idx)  # page break before the chapter's first line
             self.unit(unit)
         self.references()
         for unit in appendices:
-            self.page_break()
+            self._break_next = True
             self.unit(unit)
 
 

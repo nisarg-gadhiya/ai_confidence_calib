@@ -25,7 +25,7 @@ You are writing the final B.Tech project report for our project **Calibra: Step-
 - **Students (name and roll number, in this order):**
   - Aarya Pandey (231071003)
   - Khushbu Chaudhari (231081018)
-  - Diksha Dhanmane (231081020)
+  - Diksha Dhanmane (231081021)
   - Nisarg Gadhiya (231080022)
 - **Under the Guidance of:** Prof. Sopan Kolte
 - **Department:** DEPARTMENT OF COMPUTER ENGINEERING AND INFORMATION TECHNOLOGY
